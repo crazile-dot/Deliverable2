@@ -34,7 +34,7 @@ import org.json.JSONObject;
 public class Metrics {
 
 public static void getAddedDeleted(Repository repository, Release release, JSONObject jsonDataset) throws IOException, JSONException{
-		
+		//metodo per contare le righe aggiunte e cancellate
 		int linesAdded;
 		int linesDeleted;
 		int linesReplaced;
