@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/crazile/eclipse/java-json.jar"/>
+	<classpathentry kind="lib" path="C:/Users/crazile/Downloads/org.eclipse.jgit-5.11.1.202105131744-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/crazile/Downloads/slf4j-api-1.7.30.jar"/>
+	<classpathentry kind="lib" path="C:/Users/crazile/Downloads/slf4j-simple-1.7.30.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
