@@ -83,6 +83,8 @@ public class GetGitInfo {
 		    		List<String> sList = commit.getStringClasses();
 		    		for (String s: sList) {
 		    			Class c = new Class(s);
+		    			c.setDate(commit.getDate());
+		    			c.setChg(commit.getClasses().size());
 		    			cList.add(c);
 		    		}
 	    		}

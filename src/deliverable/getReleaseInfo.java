@@ -234,21 +234,33 @@ public class getReleaseInfo {
 	   }
 		
 	   
-	   public static boolean containsName(List<Class> list, String name){
+	   public static boolean containsName(List<Class> list, Class c){
    	    //return list.stream().map(Class::getName).filter(name::equals).findFirst().isPresent();
 	   	  boolean q = false;
 	   	  
 	   	  int counter = 0;
 	   	  for (Class e: list) {
-	   		  if (e.getName().equals(name)) {
+	   		  if (e.getName().equals(c.getName())) {
 	   			  q = true;
-	   			  
-	   		  }  
+	   			  e.setRecurrence(e.getRecurrence() + 1);
+  				  e.setSumChg(e.getSumChg() + c.getChg());
+	   			  if(e.getMaxChg() < c.getChg()) {
+	   				  e.setMaxChg(c.getChg());
+	   			  }
+	   		  } 
+	   		  else {
+	   			  c.setMaxChg(c.getChg());
+	   			  c.setRecurrence(c.getRecurrence() + 1);
+ 				  c.setSumChg(c.getSumChg() + c.getChg());
+	   		  }
 	   		  counter = counter +1;
 				  //System.out.println(counter);
 	   	  }
 	   	  return q;
 	   }
+	   
+	
+			   
 		   
 	   public static void assignClassListToRelease(List<Release> releaseList, List<Commit> commitList) throws ParseException, IOException {
 	    	  int firstRef = 0;
@@ -260,7 +272,7 @@ public class getReleaseInfo {
 	    		  for (Commit commit: commitList) {
 	    			  if (commit.getIdNumber() > firstRef && commit.getIdNumber() <= lastRef && commit.getClasses() != null) {
 	    				  for (Class c: commit.getClasses()) {
-	    						 if (temp.isEmpty() || !containsName(temp, c.getName())) {
+	    						 if (temp.isEmpty() || !containsName(temp, c)) {
 	    							 temp.add(c);
 	    					  }
 	    				  }
