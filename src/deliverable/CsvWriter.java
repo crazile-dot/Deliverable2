@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 
@@ -98,13 +99,34 @@ public class CsvWriter {
 		}
 	}
 	
-	
 	public static void csvFinal(List <Release> releases) throws IOException {
-		try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\crazile\\Desktop\\bookkeeper.csv"))) {
+		try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\crazile\\Desktop\\Releases.csv"))) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Release");
 			sb.append(",");
 			sb.append("Name");
+			sb.append(",");
+			sb.append("LOC");
+			sb.append(",");
+			sb.append("Age");
+			sb.append(",");
+			sb.append("CHG");
+			sb.append(",");
+			sb.append("MAX_CHG");
+			sb.append(",");
+			sb.append("AVG_CHG");
+			sb.append(",");
+			sb.append("NFix");
+			sb.append(",");
+			sb.append("Authors");
+			sb.append(",");
+			sb.append("NR");
+			sb.append(",");
+			sb.append("LOC_added");
+			sb.append(",");
+			sb.append("MAX_LOC_added");
+			sb.append(",");
+			sb.append("AVG_LOC_added");
 			sb.append(",");
 			sb.append("Buggy");
 			sb.append("\n");
@@ -116,6 +138,14 @@ public class CsvWriter {
 					sb2.append(releases.get(i).getNumber());
 					sb2.append(",");
 					sb2.append(c.getName());
+					sb2.append(",");
+					sb2.append(TempMetrics.classAge(c));
+					sb2.append(",");
+					sb2.append(c.getChg());
+					sb2.append(",");
+					sb2.append(c.getMaxChg());
+					sb2.append(",");
+					sb2.append(TempMetrics.getAVGChg(c));
 					sb2.append(",");
 					sb2.append(c.getBugginess());
 					sb2.append("\n");
@@ -177,9 +207,15 @@ public class CsvWriter {
 		//CsvVersionArray(releases);
 		getReleaseInfo.assignCommitListToRelease(releases, commit);
 		//Metriche
-		Metrics.getMetrics(commit, releases);
+		JSONArray jsonArray = Metrics.getMetrics(releases.subList(0, size/2));
+		FileWriter myWriter = new FileWriter("C:\\Users\\crazile\\Desktop\\output.txt");
+		for(int k = 0; k < jsonArray.length(); k++) {
+			//System.out.println(jsonArray.getJSONObject(k));
+			myWriter.write(jsonArray.getJSONObject(k).toString());
+		}
 		//
-		csvFinal(releases.subList(0,size/2));
+		
+		//csvFinal(releases.subList(0,size/2));
 		long fine = System.currentTimeMillis();
 		System.out.println((fine-inizio)/1000);
 		

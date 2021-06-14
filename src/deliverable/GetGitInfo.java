@@ -84,7 +84,7 @@ public class GetGitInfo {
 		    		for (String s: sList) {
 		    			Class c = new Class(s);
 		    			c.setDate(commit.getDate());
-		    			c.setChg(commit.getClasses().size());
+		    			//c.setChg(commit.getClasses().size());
 		    			cList.add(c);
 		    		}
 	    		}
@@ -115,7 +115,7 @@ public class GetGitInfo {
 		    is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		    while (!done && ((line = is.readLine()) != null)) {
 		    	if (line.startsWith("commit")) {
-		    		String s = line.substring(6);
+		    		String s = line.substring(7);
 		    		idList.add(s);
 		    	}
 		    	

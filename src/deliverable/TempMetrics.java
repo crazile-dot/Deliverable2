@@ -33,7 +33,11 @@ public class TempMetrics {
 	
 	
 	public static int getAVGChg(Class c) {
-		return c.getSumChg()/c.getRecurrence();
+		int rec = c.getRecurrence();
+		if(rec == 0) {
+			rec = 1;
+		}
+		return c.getSumChg()/rec;
 	}	
 	
 	
