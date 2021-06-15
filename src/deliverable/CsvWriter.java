@@ -139,6 +139,8 @@ public class CsvWriter {
 					sb2.append(",");
 					sb2.append(c.getName());
 					sb2.append(",");
+					sb2.append(c.getLoc());
+					sb2.append(",");
 					sb2.append(TempMetrics.classAge(c));
 					sb2.append(",");
 					sb2.append(c.getChg());
@@ -146,6 +148,18 @@ public class CsvWriter {
 					sb2.append(c.getMaxChg());
 					sb2.append(",");
 					sb2.append(TempMetrics.getAVGChg(c));
+					sb2.append(",");
+					sb2.append(TempMetrics.numberOfBugFixedForRelease(releases.get(i), c));
+					sb2.append(",");
+					sb2.append(c.getAuthors());
+					sb2.append(",");
+					sb2.append(c.getNRevisions());
+					sb2.append(",");
+					sb2.append(c.getLocAdded());
+					sb2.append(",");
+					sb2.append(c.getMaxLocAdded());
+					sb2.append(",");
+					sb2.append(c.getAvgLocAdded());
 					sb2.append(",");
 					sb2.append(c.getBugginess());
 					sb2.append("\n");
@@ -189,13 +203,13 @@ public class CsvWriter {
 		int size = getReleaseInfo.getReleaseList().size();
 		ticket = GetJsonFromUrl.setTicket(createdarray,resolutionarray,version,keyArray);
 		getReleaseInfo.dateComparator(releases,commit);
-		/*for(Ticket t : ticket) {
+		for(Ticket t : ticket) {
 			GetJsonFromUrl.returnAffectedVersion(t, releases);
 		}
 		ticketConCommit = GetGitInfo.setClassVersion(ticket,commit,releases);	
 		//filterTickets(ticketConCommit);
 		List<Ticket> fin = Proportion.checkIV(ticketConCommit);
-		for (Ticket t: fin) {
+		/*for (Ticket t: fin) {
 			System.out.println("FV: " + t.getFV() + " OV: " + t.getOV() + " IV: " + t.getIV() + " P: " + t.getP());
 		}*/
 		//for (int k = 0; k < ticketConCommit.size(); k++) {
@@ -208,14 +222,16 @@ public class CsvWriter {
 		getReleaseInfo.assignCommitListToRelease(releases, commit);
 		//Metriche
 		JSONArray jsonArray = Metrics.getMetrics(releases.subList(0, size/2));
-		FileWriter myWriter = new FileWriter("C:\\Users\\crazile\\Desktop\\output.txt");
+		/*FileWriter myWriter = new FileWriter("C:\\Users\\crazile\\Desktop\\output.txt");
 		for(int k = 0; k < jsonArray.length(); k++) {
 			//System.out.println(jsonArray.getJSONObject(k));
 			myWriter.write(jsonArray.getJSONObject(k).toString());
+		}*/
+		for (Release r: releases.subList(0,size/2)) {
+			Metrics.setMetric(r.getReleaseClasses(), jsonArray);
 		}
-		//
 		
-		//csvFinal(releases.subList(0,size/2));
+		csvFinal(releases.subList(0,size/2));
 		long fine = System.currentTimeMillis();
 		System.out.println((fine-inizio)/1000);
 		

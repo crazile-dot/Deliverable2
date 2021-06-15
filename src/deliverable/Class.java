@@ -17,7 +17,7 @@ public class Class {
 	private int loc; //numero di righe della classe
 	private int locAdded; //numero di righe aggiunte in quella classe, in quella release
 	private int maxLocAdded; //numero massimo di righe aggiunte a quella classe nelle varie release
-	private int avgLocAdded; //numero medio di righe aggiunte a quella classe nelle varie release
+	private float avgLocAdded; //numero medio di righe aggiunte a quella classe nelle varie release
 	private int authors; //numero di autori che hanno modificato quella classe in quella release
 	private int age; //età della classe in settimane
 	private int nFix; //numero di bug fixati in quella classe in quella release
@@ -84,7 +84,7 @@ public class Class {
 		return this.maxLocAdded;
 	}
 	
-	public int getAvgLocAdded() {
+	public float getAvgLocAdded() {
 		return this.avgLocAdded;
 	}
 	
@@ -151,7 +151,7 @@ public class Class {
 		this.maxLocAdded = maxLocAdded;
 	}
 	
-	public void setAvgLocAdded(int avgLocAdded) {
+	public void setAvgLocAdded(float avgLocAdded) {
 		this.avgLocAdded = avgLocAdded;
 	}
 	

@@ -199,7 +199,15 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
         	countDevelopers = new HashSet<String>();
         	commitJsonArray = getPerCommitMetrics(repository, r, jsonArray, countDevelopers);
 	    }
+        releaseJsonArray = generateJsonArray (commitJsonArray, countDevelopers);
         
+        return releaseJsonArray;
+	}
+        
+	
+    public static JSONArray generateJsonArray(JSONArray commitJsonArray, HashSet<String> countDevelopers) throws JSONException {
+		JSONArray releaseJsonArray = new JSONArray();
+
         for (int i = 0; i < commitJsonArray.length(); i++) {
         	int nAuth;
         	int nR = 0;
@@ -237,8 +245,55 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
         		computeReleaseJsonObject(releaseJsonArray, jsonObject);
         	}
         }
+        return releaseJsonArray;
         
-		return releaseJsonArray;
-     }
+    }
+    
+    public static void setMetric(List <Class> classes, JSONArray array) throws JSONException {
+		for (Class c: classes) {
+			for(int i = 0; i < array.length(); i++) {
+				if(array.getJSONObject(i).has("fileName") && c.getName().equals(array.getJSONObject(i).get("fileName"))) {
+					c.setLoc(Integer.parseInt(array.getJSONObject(i).get("LOC").toString()));
+					c.setLocAdded(Integer.parseInt(array.getJSONObject(i).get("LOC_Added").toString()));
+					c.setAuthors(Integer.parseInt(array.getJSONObject(i).get("NAuth").toString()));
+					c.setNRevisions(Integer.parseInt(array.getJSONObject(i).get("NR").toString()));
+			
+				}
+			}
+		}
+		computeMaxAdded(classes);
+		computeAvgAdded(classes);
+		
+	}
+    
+    public static void computeMaxAdded(List<Class> classes) {
+    	int temp;
+    	int max = 0;
+    	for (Class c: classes) {
+    		temp = c.getLocAdded();
+    		if (temp > max) {
+    			max = temp;
+    		}
+    	}
+    	for (Class c: classes) {
+    		c.setMaxLocAdded(max);
+    	}
+    }
+    
+    public static void computeAvgAdded(List<Class> classes) {
+    	float sum = 0;
+    	float add;
+    	float divide = 1;
+    	for (Class c: classes) {
+    		add = c.getLocAdded();
+    		sum += add;
+    		divide++;
+    	}
+    	for (Class c : classes) {
+    		c.setAvgLocAdded(sum/divide);
+    	}
+    }
+
+
 	
 }
