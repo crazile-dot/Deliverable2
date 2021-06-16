@@ -1,4 +1,4 @@
-package deliverable;
+package deliverable2;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -180,7 +180,7 @@ public class CsvWriter {
 	}
 	
 	
-	public static void main(String[] args) throws IOException, JSONException, ParseException, GitAPIException {
+	public static void main(String[] args) throws Exception {
 		long inizio = System.currentTimeMillis();
 		Integer i = 0;
 		Integer j = 0;
@@ -191,11 +191,11 @@ public class CsvWriter {
 	               + projName + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
 	               + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,affectedVersion,versions,created&startAt="
 				+ i.toString() + "&maxResults=" + j.toString();
-		List<Date> createdarray = deliverable.GetJsonFromUrl.DateArray(url, i , j , "created");
-		List<Date> resolutionarray = deliverable.GetJsonFromUrl.DateArray(url, i , j , "resolutiondate");
-		List <String> keyArray = deliverable.GetJsonFromUrl.keyArray(url, i, j, "key");
-		List <String> version = deliverable.getReleaseInfo.VersionArray(url, i ,1000, "name");
-		List<String> id = deliverable.GetJsonFromUrl.IdArray(url, i , j );
+		List<Date> createdarray = deliverable2.GetJsonFromUrl.DateArray(url, i , j , "created");
+		List<Date> resolutionarray = deliverable2.GetJsonFromUrl.DateArray(url, i , j , "resolutiondate");
+		List <String> keyArray = deliverable2.GetJsonFromUrl.keyArray(url, i, j, "key");
+		List <String> version = deliverable2.getReleaseInfo.VersionArray(url, i ,1000, "name");
+		List<String> id = deliverable2.GetJsonFromUrl.IdArray(url, i , j );
 		List<Ticket> ticket = new ArrayList<>();
 		List<Ticket> ticketConCommit = new ArrayList<>();
 		List <Commit> commit = GetGitInfo.getCommitList();
@@ -222,16 +222,17 @@ public class CsvWriter {
 		getReleaseInfo.assignCommitListToRelease(releases, commit);
 		//Metriche
 		JSONArray jsonArray = Metrics.getMetrics(releases.subList(0, size/2));
-		/*FileWriter myWriter = new FileWriter("C:\\Users\\crazile\\Desktop\\output.txt");
+		FileWriter myWriter = new FileWriter("C:\\Users\\crazile\\Desktop\\output.txt");
 		for(int k = 0; k < jsonArray.length(); k++) {
 			//System.out.println(jsonArray.getJSONObject(k));
 			myWriter.write(jsonArray.getJSONObject(k).toString());
-		}*/
+		}
 		for (Release r: releases.subList(0,size/2)) {
 			Metrics.setMetric(r.getReleaseClasses(), jsonArray);
 		}
 		
 		csvFinal(releases.subList(0,size/2));
+		TestWekaEasy.walkForward(releases.subList(0, size/2));
 		long fine = System.currentTimeMillis();
 		System.out.println((fine-inizio)/1000);
 		

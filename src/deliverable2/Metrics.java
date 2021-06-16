@@ -1,4 +1,4 @@
-package deliverable;
+package deliverable2;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -252,9 +252,9 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
     public static void setMetric(List <Class> classes, JSONArray array) throws JSONException {
 		for (Class c: classes) {
 			for(int i = 0; i < array.length(); i++) {
-				if(array.getJSONObject(i).has("fileName") && c.getName().equals(array.getJSONObject(i).get("fileName"))) {
+				if(array.getJSONObject(i).has("FileName") && c.getName().contains(array.getJSONObject(i).get("FileName").toString())) {
 					c.setLoc(Integer.parseInt(array.getJSONObject(i).get("LOC").toString()));
-					c.setLocAdded(Integer.parseInt(array.getJSONObject(i).get("LOC_Added").toString()));
+					c.setLocAdded(Integer.parseInt(array.getJSONObject(i).get("LOC_added").toString()));
 					c.setAuthors(Integer.parseInt(array.getJSONObject(i).get("NAuth").toString()));
 					c.setNRevisions(Integer.parseInt(array.getJSONObject(i).get("NR").toString()));
 			

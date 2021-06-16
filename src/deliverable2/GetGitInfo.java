@@ -1,4 +1,4 @@
-package deliverable;
+package deliverable2;
 
 
 import java.io.BufferedInputStream;
@@ -111,7 +111,7 @@ public class GetGitInfo {
 		    List<String> idList = new ArrayList<>();
 			File dir = new File("C:\\Users\\crazile\\git\\bookkeeper");
 			String ticketId = t.getId();
-		    final Process p = Runtime.getRuntime().exec("git log --grep=" + ticketId + " --date=iso-strict --name-status --stat HEAD --abbrev-commit --date-order --reverse", null, dir);
+		    final Process p = Runtime.getRuntime().exec("git log --grep=" + ticketId + " --date=iso-strict --name-status --stat HEAD  --date-order --reverse", null, dir);
 		    is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		    while (!done && ((line = is.readLine()) != null)) {
 		    	if (line.startsWith("commit")) {
@@ -133,6 +133,7 @@ public class GetGitInfo {
 		    			List <Class> classes = c.getClasses();
 		    			for(Class cl: classes) {
 		    				cl.setSingleTicket(t);
+		    				
 		    			}
 		    			
 		    			//setto la fixed version nelle classi della commit
