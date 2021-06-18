@@ -100,4 +100,5 @@ public class Proportion {
 			array.add(i);
 		}
 		System.out.println(getP(array));
-	}*/}
+	}*/
+}
