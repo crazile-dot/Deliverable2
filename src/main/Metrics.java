@@ -1,4 +1,4 @@
-package deliverable2;
+package main;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -297,7 +297,5 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
     		c.setAvgLocAdded(sum/divide);
     	}
     }
-
-
 	
 }

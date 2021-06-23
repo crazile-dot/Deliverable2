@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="C:/Users/crazile/git/Deliverable2/lib/slf4j-simple-1.7.30.jar"/>
 	<classpathentry kind="lib" path="C:/Users/crazile/git/Deliverable2/lib/weka.jar"/>
 	<classpathentry kind="lib" path="C:/Users/crazile/git/Deliverable2/lib/java-json.jar"/>
+	<classpathentry kind="lib" path="C:/Users/crazile/Downloads/SMOTE-1.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

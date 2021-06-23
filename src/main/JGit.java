@@ -1,4 +1,4 @@
-package deliverable2;
+package main;
 
 public class JGit {
 

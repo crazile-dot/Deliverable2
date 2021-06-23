@@ -1,4 +1,4 @@
-package deliverable2;
+package main;
 
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;

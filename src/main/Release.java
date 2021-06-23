@@ -1,4 +1,4 @@
-package deliverable2;
+package main;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +12,7 @@ public class Release {
 	private Commit commit;
 	private List<Commit> rCommitList;
 	private List<Class> releaseClasses;
+	private Integer numOfBuggyClass;
 	
 	
 	public Release(String id, String name, Date date, int number) {
@@ -47,6 +48,14 @@ public class Release {
 	
 	public List<Class> getReleaseClasses() {
 		return this.releaseClasses;
+	}
+	
+	public Integer getNumOfBuggyClass() {
+		return this.numOfBuggyClass;
+	}
+	
+	public void setNumOfBuggyClass(Integer numOfBuggyClass) {
+		this.numOfBuggyClass = numOfBuggyClass;
 	}
 	
 	public void setId(String id) {
