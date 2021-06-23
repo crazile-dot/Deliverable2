@@ -232,7 +232,7 @@ public class CsvWriter {
 		}
 		
 		csvFinal(releases.subList(0,size/2));
-		TestWekaEasy.walkForward(releases.subList(0, size/2));
+		//TestWekaEasy.walkForward(releases.subList(0, size/2));
 		long fine = System.currentTimeMillis();
 		System.out.println((fine-inizio)/1000);
 		
