@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="smote-1.0.3">
+    <CLASSES>
+      <root url="file://$USER_HOME$/Downloads/smote-1.0.3.jar" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$USER_HOME$/Downloads/smote-1.0.3.jar" recursive="false" />
+  </library>
+</component>

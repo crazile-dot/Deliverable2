@@ -155,7 +155,7 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
 	public static JSONArray getMetrics(List<Release> releaseList) throws IOException, JSONException, NoHeadException, GitAPIException, ParseException{
 				
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		Repository repository = builder.setGitDir(new File("C:\\Users\\crazile\\git\\bookkeeper\\.git"))
+		Repository repository = builder.setGitDir(new File("C:\\Users\\Ilenia\\Intellij-projects\\bookkeeper\\.git"))
 		  .readEnvironment() // scan environment GIT_* variables
 		  .findGitDir() // scan up the file system tree
 		  .build();

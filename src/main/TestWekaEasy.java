@@ -34,7 +34,7 @@ import weka.attributeSelection.BestFirst;
 //import required classes
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.GreedyStepwise;
-import weka.classifiers.AbstractClassifier;
+//import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.CostMatrix;
 import weka.classifiers.Evaluation;
@@ -266,10 +266,10 @@ public class TestWekaEasy{
 	    featureSelection.setSampling("NoSampling");
 	    featureSelection.setEvaluation(evalClass);
 		wekaList.add(featureSelection);
-		System.out.println("AUC filtered = "+evalClass.areaUnderROC(1));
-		System.out.println("Kappa filtered = "+evalClass.kappa());
-		System.out.println("Recall filtered = "+evalClass.recall(1));
-		System.out.println("Precision filtered = "+evalClass.precision(1));
+		System.out.println("AUC filtered = " + evalClass.areaUnderROC(1));
+		System.out.println("Kappa filtered = " + evalClass.kappa());
+		System.out.println("Recall filtered = " + evalClass.recall(1));
+		System.out.println("Precision filtered = " + evalClass.precision(1));
 	    WekaData oS = overSampling(filteredTraining, testingFiltered, defectiveInTraining, c, z);
 	    WekaData uS = underSampling(filteredTraining, testingFiltered, c, z);
 	    WekaData smote = smoteSampling(filteredTraining, testingFiltered, defectiveInTraining, c, z);

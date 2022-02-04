@@ -7,7 +7,7 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
-import weka.filters.unsupervised.instance.RemoveDuplicates;
+//import weka.filters.unsupervised.instance.RemoveDuplicates;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,6 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
-import weka.filters.unsupervised.instance.RemoveDuplicates;
 
 public class ArffConverter {
 	

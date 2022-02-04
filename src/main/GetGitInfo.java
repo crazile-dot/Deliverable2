@@ -32,7 +32,7 @@ public class GetGitInfo {
 	    List<String> idList = new ArrayList<>();
 	    List<Date> dateList = new ArrayList<>();
 	    List<String> classesList = new ArrayList<>();
-	    File dir = new File("C:\\Users\\crazile\\git\\bookkeeper");
+	    File dir = new File("C:\\Users\\Ilenia\\Intellij-projects\\bookkeeper");
 	    final Process p = Runtime.getRuntime().exec(PROGRAM, null, dir);
 	    is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 	    int countLines = 0;
@@ -109,7 +109,7 @@ public class GetGitInfo {
 			BufferedReader is;  // reader for output of process
 		    String line;
 		    List<String> idList = new ArrayList<>();
-			File dir = new File("C:\\Users\\crazile\\git\\bookkeeper");
+			File dir = new File("C:\\Users\\Ilenia\\Intellij-projects\\bookkeeper");
 			String ticketId = t.getId();
 		    final Process p = Runtime.getRuntime().exec("git log --grep=" + ticketId + " --date=iso-strict --name-status --stat HEAD  --date-order --reverse", null, dir);
 		    is = new BufferedReader(new InputStreamReader(p.getInputStream()));

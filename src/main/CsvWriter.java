@@ -15,12 +15,13 @@ import org.json.JSONException;
 
 public class CsvWriter {
 	
-	static String projName = "BOOKKEEPER";
+	static String projName1 = "BOOKKEEPER";
+	static String projName2 = "";
 	static Integer max = 1;
 	static Integer index;
 	
 	public static void CsvWriteArray(List <Date> createdarray, List <Date> resolutionarray, List <String> versionarray, List <String> Idarray) throws IOException {
-		try (BufferedWriter br = new BufferedWriter(new FileWriter("/Users/mirko/Desktop/output.csv"))) {
+		try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\Ilenia\\Desktop\\output.csv"))) {
 			// Write header of the csv file produced in output
 			
 			StringBuilder sb = new StringBuilder();
@@ -54,7 +55,7 @@ public class CsvWriter {
 	
 	
 	public static void CsvVersionArray(List <Release> releases) throws IOException {
-		try (BufferedWriter br = new BufferedWriter(new FileWriter("/Users/mirko/Desktop/Releases.csv"))) {
+		try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\Ilenia\\Desktop\\Releases.csv"))) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Number: ");
 			sb.append(",");
@@ -84,7 +85,7 @@ public class CsvWriter {
 	}
 	
 	public static void csvByWeka(List <WekaData> wList, List<Release> releases) throws IOException {
-		String name = "/Users/mirko/Desktop/weka_data" + ".csv";
+		String name = "C:\\Users\\Ilenia\\Desktop\\weka_data" + ".csv";
 		try (BufferedWriter br = new BufferedWriter(new FileWriter(name))) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Dataset");
@@ -134,7 +135,8 @@ public class CsvWriter {
 				sb2.append(",");
 				sb2.append(getPercentageDefectiveInTraining(releases, w.getTrainingStep()));
 				sb2.append(",");
-				sb2.append((releases.get(w.getTrainingStep()).getNumOfBuggyClass()*100)/releases.get(w.getTrainingStep()).getReleaseClasses().size());
+				if(releases.get(w.getTrainingStep()).getReleaseClasses().size() != 0)
+					sb2.append((releases.get(w.getTrainingStep()).getNumOfBuggyClass()*100)/releases.get(w.getTrainingStep()).getReleaseClasses().size());
 				sb2.append(",");
 				sb2.append(w.getClassifier());
 				sb2.append(",");
@@ -158,7 +160,7 @@ public class CsvWriter {
 				sb2.append(",");
 				sb2.append(w.getEval().precision(1));
 				sb2.append(",");
-				sb2.append(w.getEval().areaUnderROC(1));
+				sb2.append((w.getEval()).areaUnderROC(1));
 				sb2.append(",");
 				sb2.append(w.getEval().kappa());
 				sb2.append("\n");
@@ -184,7 +186,7 @@ public class CsvWriter {
 	
 	
 	public static String csvForWeka(List <Release> releases, int counter) throws IOException {
-		String name = "/Users/mirko/Desktop/Releases" + counter + ".csv";
+		String name = "C:\\Users\\Ilenia\\Desktop\\Releases" + counter + ".csv";
 		try (BufferedWriter br = new BufferedWriter(new FileWriter(name))) {
 			StringBuilder sb = new StringBuilder();
 			//sb.append("Name");
@@ -265,7 +267,10 @@ public class CsvWriter {
 	public static int getDefectiveInTraining(List<Release> releases, int z) {
 		int counter = 0;
 		for(int i = 0; i < z; i ++) {
+			System.out.println("PRINT 1: " + releases.get(i).toString());
+			System.out.println(("PRINT 2: " + releases.get(i).getNumOfBuggyClass()));
 			counter = counter + releases.get(i).getNumOfBuggyClass();
+
 		}
 		return counter;
 	}
@@ -286,7 +291,7 @@ public class CsvWriter {
 	}
 	
 	public static void csvFinal(List <Release> releases) throws IOException {
-		try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\crazile\\Desktop\\Releases.csv"))) {
+		try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\Ilenia\\Intellij-projects\\Releases.csv"))) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Release");
 			sb.append(",");
@@ -374,7 +379,7 @@ public class CsvWriter {
 		
 		
 		String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22"
-	               + projName + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
+	               + projName1 + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
 	               + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,affectedVersion,versions,created&startAt="
 				+ i.toString() + "&maxResults=" + j.toString();
 		List<Date> createdarray = main.GetJsonFromUrl.DateArray(url, i , j , "created");
@@ -410,7 +415,7 @@ public class CsvWriter {
 		getReleaseInfo.assignCommitListToRelease(releases, commit);
 		//Metriche
 		JSONArray jsonArray = Metrics.getMetrics(releases.subList(0, size/2));
-		FileWriter myWriter = new FileWriter("C:\\Users\\crazile\\Desktop\\output.txt");
+		FileWriter myWriter = new FileWriter("C:\\Users\\Ilenia\\Intellij-projects\\output.txt");
 		for(int k = 0; k < jsonArray.length(); k++) {
 			//System.out.println(jsonArray.getJSONObject(k));
 			myWriter.write(jsonArray.getJSONObject(k).toString());

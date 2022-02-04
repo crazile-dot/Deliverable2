@@ -12,7 +12,7 @@ public class Release {
 	private Commit commit;
 	private List<Commit> rCommitList;
 	private List<Class> releaseClasses;
-	private Integer numOfBuggyClass;
+	private Integer numOfBuggyClass = 0;
 	
 	
 	public Release(String id, String name, Date date, int number) {
