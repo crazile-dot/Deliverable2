@@ -15,8 +15,8 @@ import org.json.JSONException;
 
 public class CsvWriter {
 	
-	static String projName1 = "BOOKKEEPER";
-	static String projName2 = "RAMPART";
+	static String projName = "BOOKKEEPER";
+	//static String projName = "RAMPART";
 	static Integer max = 1;
 	static Integer index;
 	
@@ -85,7 +85,7 @@ public class CsvWriter {
 	}
 
 	public static void csvByWeka(List <WekaData> wList, List<Release> releases) throws IOException {
-		String name = "C:\\Users\\Ilenia\\Desktop\\weka_data" + ".csv";
+		String name = "C:\\Users\\Ilenia\\Desktop\\weka-data" + ".csv";
 		try (BufferedWriter br = new BufferedWriter(new FileWriter(name))) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Dataset");
@@ -126,7 +126,7 @@ public class CsvWriter {
 			sb.append("\n");
 			br.write(sb.toString());
 			for (WekaData w : wList) {
-				if(w == null || w.getEval() == null) {
+				if(w.getEval() == null) {
 					continue;
 				}
 				StringBuilder sb2 = new StringBuilder();
@@ -138,8 +138,7 @@ public class CsvWriter {
 				sb2.append(",");
 				sb2.append(getPercentageDefectiveInTraining(releases, w.getTrainingStep()));
 				sb2.append(",");
-				if(releases.get(w.getTrainingStep()).getReleaseClasses().size() != 0)
-					sb2.append((releases.get(w.getTrainingStep()).getNumOfBuggyClass()*100)/releases.get(w.getTrainingStep()).getReleaseClasses().size());
+				sb2.append((releases.get(w.getTrainingStep()).getNumOfBuggyClass()*100)/(releases.get(w.getTrainingStep()).getReleaseClasses().size()+1));
 				sb2.append(",");
 				sb2.append(w.getClassifier());
 				sb2.append(",");
@@ -151,24 +150,28 @@ public class CsvWriter {
 				sb2.append(",");
 				sb2.append(w.getTreshold());
 				sb2.append(",");
-				if((Double)w.getEval().truePositiveRate(1) != null)
-					sb2.append((Double)w.getEval().truePositiveRate(1));
-				sb2.append(",");
-				sb2.append(w.getEval().falsePositiveRate(1));
-				sb2.append(",");
-				sb2.append(w.getEval().falsePositiveRate(1));
-				sb2.append(",");
-				sb2.append(w.getEval().falseNegativeRate(1));
-				sb2.append(",");
-				sb2.append(w.getEval().recall(1));
-				sb2.append(",");
-				sb2.append(w.getEval().precision(1));
-				sb2.append(",");
-				sb2.append(w.getEval().areaUnderROC(1));
-				sb2.append(",");
-				sb2.append(w.getEval().kappa());
-				sb2.append("\n");
-				br.write(sb2.toString());
+				try {
+					sb2.append(w.getEval().truePositiveRate(1));
+					sb2.append(",");
+					sb2.append(w.getEval().falsePositiveRate(1));
+					sb2.append(",");
+					sb2.append(w.getEval().falsePositiveRate(1));
+					sb2.append(",");
+					sb2.append(w.getEval().falseNegativeRate(1));
+					sb2.append(",");
+					sb2.append(w.getEval().recall(1));
+					sb2.append(",");
+					sb2.append(w.getEval().precision(1));
+					sb2.append(",");
+					sb2.append(w.getEval().areaUnderROC(1));
+					sb2.append(",");
+					sb2.append(w.getEval().kappa());
+					sb2.append("\n");
+					br.write(sb2.toString());
+				}
+				catch(NullPointerException e) {
+					System.out.print("NullPointerException caught");
+				}
 			}
 		}
 
@@ -383,7 +386,7 @@ public class CsvWriter {
 		
 		
 		String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22"
-	               + projName1 + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
+	               + projName + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
 	               + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,affectedVersion,versions,created&startAt="
 				+ i.toString() + "&maxResults=" + j.toString();
 		List<Date> createdarray = main.GetJsonFromUrl.DateArray(url, i , j , "created");
@@ -416,9 +419,10 @@ public class CsvWriter {
 		computeBuggyness(releases.subList(0, size/2));
 		//CsvWriteArray(createdarray,resolutionarray,keyArray, id, commit);
 		//CsvVersionArray(releases);
-		getReleaseInfo.assignCommitListToRelease(releases, commit);
+		List<Release> halfReleases = releases.subList(0, size/2);
+		getReleaseInfo.assignCommitListToRelease(halfReleases, commit);
 		//Metriche
-		JSONArray jsonArray = Metrics.getMetrics(releases.subList(0, size/2));
+		JSONArray jsonArray = Metrics.getMetrics(halfReleases.subList(0, size/2));
 		FileWriter myWriter = new FileWriter("C:\\Users\\Ilenia\\Intellij-projects\\output.txt");
 		for(int k = 0; k < jsonArray.length(); k++) {
 			//System.out.println(jsonArray.getJSONObject(k));

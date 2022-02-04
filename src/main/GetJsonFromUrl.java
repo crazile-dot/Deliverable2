@@ -1,5 +1,9 @@
 package main;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +20,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
+
 
 public class GetJsonFromUrl {
 	static String projName = "Bookkeeper";
