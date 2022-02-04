@@ -16,7 +16,7 @@ import org.json.JSONException;
 public class CsvWriter {
 	
 	static String projName1 = "BOOKKEEPER";
-	static String projName2 = "";
+	static String projName2 = "RAMPART";
 	static Integer max = 1;
 	static Integer index;
 	
@@ -83,7 +83,7 @@ public class CsvWriter {
 			}	
 		}
 	}
-	
+
 	public static void csvByWeka(List <WekaData> wList, List<Release> releases) throws IOException {
 		String name = "C:\\Users\\Ilenia\\Desktop\\weka_data" + ".csv";
 		try (BufferedWriter br = new BufferedWriter(new FileWriter(name))) {
@@ -126,6 +126,9 @@ public class CsvWriter {
 			sb.append("\n");
 			br.write(sb.toString());
 			for (WekaData w : wList) {
+				if(w == null || w.getEval() == null) {
+					continue;
+				}
 				StringBuilder sb2 = new StringBuilder();
 				sb2.append(w.getTrainingStep());
 				sb2.append(",");
@@ -148,7 +151,8 @@ public class CsvWriter {
 				sb2.append(",");
 				sb2.append(w.getTreshold());
 				sb2.append(",");
-				sb2.append(w.getEval().truePositiveRate(1));
+				if((Double)w.getEval().truePositiveRate(1) != null)
+					sb2.append((Double)w.getEval().truePositiveRate(1));
 				sb2.append(",");
 				sb2.append(w.getEval().falsePositiveRate(1));
 				sb2.append(",");
@@ -160,14 +164,14 @@ public class CsvWriter {
 				sb2.append(",");
 				sb2.append(w.getEval().precision(1));
 				sb2.append(",");
-				sb2.append((w.getEval()).areaUnderROC(1));
+				sb2.append(w.getEval().areaUnderROC(1));
 				sb2.append(",");
 				sb2.append(w.getEval().kappa());
 				sb2.append("\n");
 				br.write(sb2.toString());
-				}
-			}	
-		
+			}
+		}
+
 	}
 	
 	public static String getCostName(WekaData w) {

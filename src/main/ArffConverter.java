@@ -20,9 +20,9 @@ import weka.filters.Filter;
 public class ArffConverter {
 	
 	private static String[] proj = {"Bookkeeper","Storm"};
-	private static String path = "/Users/mirko/Desktop/Releases3";
+	private static String path = "C:\\Users\\Ilenia\\Desktop\\Releases3";
 	
-	public static String arffCreation(String path) throws Exception {
+	public static String arffCreation(String path) throws IOException {
 		System.out.println(path);
 		File projectClasses = new File(path);
 		String newPath = new String();

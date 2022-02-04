@@ -20,15 +20,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module-library">
-      <library name="java-json.jar">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/java-json.jar/java-json.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="org.eclipse.jgit-6.0.0.202111291000-r.jar">
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/org.eclipse.jgit-6.0.0.202111291000-r.jar!/" />
@@ -38,11 +29,39 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="smote-1.0.3" level="project" />
-    <orderEntry type="library" name="slf4j-api-1.7.35" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/weka (1).jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/java-json.jar (1)/java-json.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Downloads/java-json.jar (1)/java-json.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/jar_files (1)/slf4j-api-1.7.35.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/jar_files (1)/slf4j-simple-1.7.35.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
