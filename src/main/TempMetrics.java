@@ -1,10 +1,8 @@
 package main;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 
 public class TempMetrics {
 	
@@ -38,8 +36,6 @@ public class TempMetrics {
 			rec = 1;
 		}
 		return c.getSumChg()/rec;
-	}	
-	
-	
+	}
 
 }

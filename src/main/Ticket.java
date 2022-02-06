@@ -22,9 +22,7 @@ public class Ticket {
 		this.id = id;
 	}
 	
-	Ticket(){
-		
-	}
+	Ticket() {}
 	
 	
 	public String getName() {

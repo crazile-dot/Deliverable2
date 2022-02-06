@@ -1,64 +1,0 @@
-
-4deliverable2.Metrics#countLines(Ljava/lang/String;)JI
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaV V("8*§
-5I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaZ Z(À»
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaZ Z(#
-%5java.lang.String"3java.io.BufferedReader#readLine()Ljava/lang/String;*"
- 
-readerjava.io.BufferedReader2
-readLine()*
-5
-1*Ï
-6I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaY Y(zñ
-ì
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaY Y(z 
-readerjava.io.BufferedReader"__id*
-
-%3java.io.BufferedReader*
-5*ü
-7I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaY$ Y(zÑÅ
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaY( Y(6
-%3java.io.BufferedReader"java.io.BufferedReader¬
-ø
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaY$ Y(z
-%4"0java.io.BufferedReader#<init>(Ljava/io/Reader;)V*
-
-%3java.io.BufferedReader*
-
-%1java.io.FileReader*
-6*À
-8I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaYF Y(mª
-∏
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaYF Y(x
-%0java.lang.String"__concat*)'
-%C:\\Users\\crazile\\git\\bookkeeper\\*
-
-fileNamejava.lang.String{y
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaY; Y(E
-%1java.io.FileReader"java.io.FileReader∫
-∑
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.javaY7 Y(y
-%2".java.io.FileReader#<init>(Ljava/lang/String;)V*
-
-%1java.io.FileReader*
-
-%0java.lang.String*
-7*£
-1I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.java^ ^("S
-I
-?C:/Users/crazile/git/Deliverable2/src/deliverable2/Metrics.java^ ^(
-"":
-fileNamejava.lang.StringB"
-deliverable2.Metrics

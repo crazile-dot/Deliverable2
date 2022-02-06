@@ -1,22 +1,20 @@
 package main;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.json.JSONArray;
-import org.json.JSONException;
 
 
 
 public class CsvWriter {
 	
-	static String projName = "BOOKKEEPER";
-	//static String projName = "RAMPART";
+	//static String projName = "BOOKKEEPER";
+	static String projName = "S2GRAPH";
 	static Integer max = 1;
 	static Integer index;
 	
@@ -196,8 +194,6 @@ public class CsvWriter {
 		String name = "C:\\Users\\Ilenia\\Desktop\\Releases" + counter + ".csv";
 		try (BufferedWriter br = new BufferedWriter(new FileWriter(name))) {
 			StringBuilder sb = new StringBuilder();
-			//sb.append("Name");
-			//sb.append(",");
 			sb.append("LOC");
 			sb.append(",");
 			sb.append("Age");
@@ -227,8 +223,6 @@ public class CsvWriter {
 			for (int i = 0 ; i < size; i++) {
 				for (Class c : releases.get(i).getReleaseClasses()) {
 					StringBuilder sb2 = new StringBuilder();
-					//sb2.append(c.getName());
-					//sb2.append(",");
 					sb2.append(c.getLoc());
 					sb2.append(",");
 					sb2.append(TempMetrics.classAge(c));
@@ -407,25 +401,16 @@ public class CsvWriter {
 			GetJsonFromUrl.returnAffectedVersion(t, releases);
 		}
 		ticketConCommit = GetGitInfo.setClassVersion(ticket,commit,releases);	
-		//filterTickets(ticketConCommit);
 		List<Ticket> fin = Proportion.checkIV(ticketConCommit);
-		/*for (Ticket t: fin) {
-			System.out.println("FV: " + t.getFV() + " OV: " + t.getOV() + " IV: " + t.getIV() + " P: " + t.getP());
-		}*/
-		//for (int k = 0; k < ticketConCommit.size(); k++) {
-			//System.out.println("ticket: " + ticketConCommit.get(k).getId() + "ticket FV: " + ticketConCommit.get(k).getFV() + "ticket IV: " + ticketConCommit.get(k).getIV()+ "Ticket OV: " +ticketConCommit.get(k).getOV());
-		//}	
 		getReleaseInfo.assignClassListToRelease(releases, commit);
 		computeBuggyness(releases.subList(0, size/2));
-		//CsvWriteArray(createdarray,resolutionarray,keyArray, id, commit);
-		//CsvVersionArray(releases);
 		List<Release> halfReleases = releases.subList(0, size/2);
 		getReleaseInfo.assignCommitListToRelease(halfReleases, commit);
+
 		//Metriche
 		JSONArray jsonArray = Metrics.getMetrics(halfReleases.subList(0, size/2));
 		FileWriter myWriter = new FileWriter("C:\\Users\\Ilenia\\Intellij-projects\\output.txt");
 		for(int k = 0; k < jsonArray.length(); k++) {
-			//System.out.println(jsonArray.getJSONObject(k));
 			myWriter.write(jsonArray.getJSONObject(k).toString());
 		}
 		for (Release r: releases.subList(0,size/2)) {
@@ -440,7 +425,6 @@ public class CsvWriter {
 			wekaList.addAll(TestWekaEasy.wekaAction(testingSet.get(z-1), trainingSet.get(z-1), z, getDefectiveInTraining(releases.subList(0,size/2), z)));
 		}
 		csvByWeka(wekaList, releases.subList(0,size/2));
-		//TestWekaEasy.walkForward(releases.subList(0, size/2));
 		long fine = System.currentTimeMillis();
 		System.out.println((fine-inizio)/1000);
 		

@@ -1,18 +1,0 @@
-
-Anull#compare(Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;)IR
-FC:/Users/crazile/git/Deliverable2/src/deliverable2/getReleaseInfo.javaé é("1*€
-1R
-FC:/Users/crazile/git/Deliverable2/src/deliverable2/getReleaseInfo.javaè è(£†
-R
-FC:/Users/crazile/git/Deliverable2/src/deliverable2/getReleaseInfo.javaè è(	
-%0int"Jjava.time.LocalDateTime#compareTo(Ljava/time/chrono/ChronoLocalDateTime;)I*
-
-o1java.time.LocalDateTime*
-
-o2java.time.LocalDateTime21compareTo(Ljava/time/chrono/ChronoLocalDateTime;)"\
-R
-FC:/Users/crazile/git/Deliverable2/src/deliverable2/getReleaseInfo.javaè è(
-"":
-o1java.time.LocalDateTime:
-o2java.time.LocalDateTimeB&$
-"Ldeliverable2/getReleaseInfo$5653;

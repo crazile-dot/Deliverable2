@@ -1,18 +1,12 @@
 package main;
 
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,12 +31,8 @@ public class GetGitInfo {
 	    is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 	    int countLines = 0;
 	    while (!done && ((line = is.readLine()) != null)) {
-	    	//System.out.println(line);
 	    	if (line.startsWith("commit")) {
 	    		String d = line.substring(7);
-	    		//System.out.println(line);
-	    		//System.out.println(d);
-	    		//classesList.clear();
 	    		idList.add(d);
 	    	} else if (line.startsWith("Date:")) {
 	    		String d = line.substring(7);
@@ -91,14 +81,6 @@ public class GetGitInfo {
 	    		commit.setClasses(cList);
 	    	}	
 	    }
-	    
-	    /*for (Commit elem: commitList) {
-	    	System.out.println(elem.getIdNumber());
-		    System.out.println(elem.getId());
-		    System.out.println(elem.getDate());
-		    System.out.println(elem.getClasses());
-	    } */
-	   
 	    return commitList;
 	}
 	
@@ -118,7 +100,6 @@ public class GetGitInfo {
 		    		String s = line.substring(7);
 		    		idList.add(s);
 		    	}
-		    	
 		    }
 		    for(String e: idList) {
 		    	for(Commit c: commitList) {
@@ -133,11 +114,8 @@ public class GetGitInfo {
 		    			List <Class> classes = c.getClasses();
 		    			for(Class cl: classes) {
 		    				cl.setSingleTicket(t);
-		    				
 		    			}
-		    			
-		    			//setto la fixed version nelle classi della commit
-		    		}
+					}
 		    	}
 		    }
 		}

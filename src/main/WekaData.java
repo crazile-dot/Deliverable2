@@ -8,6 +8,7 @@ public class WekaData {
 	private String classifier;
 	private Boolean featureSelection;
 	private String sampling;
+
 	//0 value is no costSensitive, 1 value is sensitive threshold, 2 value is sensitive learning 
 	private int costSensitive;
 	private int trainingStep;

@@ -15,20 +15,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 
 public class GetJsonFromUrl {
-	static String projName = "Bookkeeper";
 	static Integer max = 1;
 	static Integer index;
-	public static HashMap<LocalDateTime, String> releaseNames;
-	public static HashMap<LocalDateTime, String> releaseID;
-	public static ArrayList<LocalDateTime> releases;
 	
 	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 		InputStream is = new URL(url).openStream();
@@ -86,7 +80,6 @@ public class GetJsonFromUrl {
 		for (; i < max && i < j; i++) {
 			JSONObject field = issues.getJSONObject(i % 1000);
 			String fieldobject = field.getString("key");
-			//System.out.println(fieldobject);
 			array.add(fieldobject);
 		}
 		index = i;
@@ -154,31 +147,7 @@ public class GetJsonFromUrl {
 	    				}
 	    			}
 	    		}
-	    		
-	    		
 	    	}
 	    }
 	}
-	
-
 }
-
-
-
-
-
-
-/*public static void main(String[] args) throws IOException, JSONException, ParseException {
-	Integer i = 0;
-	Integer j = 0;
-	j = i + 1000;
-	String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22" + projName
-			+ "%22AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt="
-			+ i.toString() + "&maxResults=" + j.toString();
-	List<Date> createdarray = DateArray(url, i , j , "created");
-	List<Date> resolutionarray = DateArray(url, i , j , "resolutiondate");
-	List <String> version = VersionArray(url, i ,j, "key");
-	
-	}
-*/
-
