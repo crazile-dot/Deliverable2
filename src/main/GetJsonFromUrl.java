@@ -13,16 +13,18 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-
 public class GetJsonFromUrl {
+
+	private GetJsonFromUrl () {}
+
 	static Integer max = 1;
 	static Integer index;
+	private static String issue = "issues";
+	private static String total = "total";
 	
 	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 		InputStream is = new URL(url).openStream();
@@ -33,7 +35,6 @@ public class GetJsonFromUrl {
 			is.close();
 		}
 	}
-	
 	
 	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
@@ -56,12 +57,12 @@ public class GetJsonFromUrl {
 		return new SimpleDateFormat(format).parse(string);
 	}
 	
-	public static List<Date> DateArray(String url, int i, int j, String getter) throws IOException, JSONException, ParseException {
+	public static List<Date> dateArray(String url, int i, int j, String getter) throws IOException, JSONException, ParseException {
 	
 		JSONObject json = readJsonFromUrl(url);
-		JSONArray issues = json.getJSONArray("issues");
+		JSONArray issues = json.getJSONArray(issue);
 		ArrayList<Date> array = new ArrayList<>();
-		max = json.getInt("total");
+		max = json.getInt(total);
 		for (; i < max && i < j; i++) {
 			JSONObject field = issues.getJSONObject(i % 1000);
 			String fieldobject = field.getJSONObject("fields").get(getter).toString();
@@ -71,12 +72,12 @@ public class GetJsonFromUrl {
 		return array;
 	}
 	
-	public static List<String> keyArray(String url, int i, int j, String getter) throws IOException, JSONException, ParseException {
+	public static List<String> keyArray(String url, int i, int j) throws IOException, JSONException, ParseException {
 
 		JSONObject json = readJsonFromUrl(url);
-		JSONArray issues = json.getJSONArray("issues");
+		JSONArray issues = json.getJSONArray(issue);
 		ArrayList<String> array = new ArrayList<>();
-		max = json.getInt("total");
+		max = json.getInt(total);
 		for (; i < max && i < j; i++) {
 			JSONObject field = issues.getJSONObject(i % 1000);
 			String fieldobject = field.getString("key");
@@ -87,12 +88,12 @@ public class GetJsonFromUrl {
 	}
 	
 	
-	public static List<String> IdArray(String url, int i, int j) throws IOException, JSONException, ParseException {
+	public static List<String> idArray(String url, int i, int j) throws IOException, JSONException, ParseException {
 	
 		JSONObject json = readJsonFromUrl(url);
-		JSONArray issues = json.getJSONArray("issues");
+		JSONArray issues = json.getJSONArray(issue);
 		ArrayList<String> array = new ArrayList<>();
-		max = json.getInt("total");
+		max = json.getInt(total);
 		for (; i < max && i < j; i++) {
 			JSONObject field = issues.getJSONObject(i % 1000);
 			String fieldobject = field.getString("id");
@@ -113,14 +114,17 @@ public class GetJsonFromUrl {
 	}
 	
 	
-	public static boolean setFVOV(Ticket ticket, List<Release> releases){
+	public static boolean setFVOV(Ticket ticket, List<Release> releases) {
 		for (Release r: releases) {
 			if(ticket.getCreationDate().before(r.getDate()) && ticket.getOV() == null) {
 				ticket.setOV(r.getNumber());
 			}
 			if(ticket.getCommit().getDate().before(r.getDate())) {
 				ticket.setFV(r.getNumber());
-				return true;
+				break;
+			}
+			else if (ticket.getFV() == null) {
+				ticket.setFV(releases.size());
 			}
 		}
 		return true;
@@ -135,19 +139,18 @@ public class GetJsonFromUrl {
 	    JSONObject json = readJsonFromUrl(url);
 	    JSONObject fields = json.getJSONObject("fields");
 	    JSONArray versions = fields.getJSONArray("versions");
-	    if(versions.length() != 0 ) {
-	    	if(versions.getJSONObject(i).has("releaseDate")){
-	    		String date = versions.getJSONObject(i).get("releaseDate").toString();
-	    		Date IV = parseStringToAffectedDate(date);
-	    		if(IV.before(ticket.getCreationDate())) {
-	    			for(Release r: releases) {
-	    				if(IV.before(r.getDate())) {
-	    					ticket.setIV(r.getNumber());
-	    					break;
-	    				}
-	    			}
-	    		}
-	    	}
-	    }
+
+		if(versions.length() != 0 && versions.getJSONObject(i).has("releaseDate")){
+			String date = versions.getJSONObject(i).get("releaseDate").toString();
+			Date iV = parseStringToAffectedDate(date);
+			if(iV.before(ticket.getCreationDate())) {
+				for(Release r: releases) {
+					if(iV.before(r.getDate())) {
+						ticket.setIV(r.getNumber());
+						break;
+					}
+				}
+			}
+		}
 	}
 }

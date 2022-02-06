@@ -8,13 +8,14 @@ import weka.core.converters.CSVLoader;
 
 
 public class ArffConverter {
-	
-	private static String[] proj = {"Bookkeeper","Storm"};
-	private static String path = "C:\\Users\\Ilenia\\Desktop\\Releases3";
+
+	private ArffConverter() {
+		throw new IllegalStateException("Converter");
+	}
 	
 	public static String arffCreation(String path) throws IOException {
 		File projectClasses = new File(path);
-		String newPath = new String();
+		String newPath = "";
 		if (projectClasses.exists()) {
 			CSVLoader loader = new CSVLoader();
 			loader.setFieldSeparator(",");

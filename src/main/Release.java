@@ -11,7 +11,7 @@ public class Release {
 	private Integer number;
 	private Commit commit;
 	private List<Commit> rCommitList;
-	private List<Class> releaseClasses;
+	private List<ClassModel> releaseClasses;
 	private Integer numOfBuggyClass = 0;
 	
 	
@@ -46,7 +46,7 @@ public class Release {
 		return this.rCommitList;
 	}
 	
-	public List<Class> getReleaseClasses() {
+	public List<ClassModel> getReleaseClasses() {
 		return this.releaseClasses;
 	}
 	
@@ -82,7 +82,7 @@ public class Release {
 		this.rCommitList = rCommitList;
 	}
 	
-	public void setReleaseClasses(List<Class> releaseClasses) {
+	public void setReleaseClasses(List<ClassModel> releaseClasses) {
 		this.releaseClasses = releaseClasses;
 	}
 }

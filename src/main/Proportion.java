@@ -4,24 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Proportion {
-	
+
+	private Proportion() {}
+
 	public static List<Ticket> checkIV(List<Ticket> ticketList) {
-		int p;
 		int iV;
 		List<Ticket> ret = new ArrayList<>();
 		for (int i = 0; i < ticketList.size(); i++) {
-			if (ticketList.get(i).getCommit() != null && ticketList.get(i).getFV() != null && ticketList.get(i).getOV() != null && ticketList.get(i).getFV() != ticketList.get(i).getIV()) {
-
-				//se IV � null viene settato a -1
+			if(ticketList.get(i).getCommit() == null) {
+				continue;
+			}
+			if (ticketList.get(i).getFV() != null && ticketList.get(i).getOV() != null) {
+				//se IV != null viene settato a -1
 				if (ticketList.get(i).getIV() == -1) {
 					iV = computeInconsistentIV(i, ticketList);
 					ticketList.get(i).setIV(iV);
 				} else {
-					p = computeP(ticketList.get(i));
+					computeP(ticketList.get(i));
 				}
-				if (ticketList.get(i).getFV() != ticketList.get(i).getIV()) {
-					ret.add(ticketList.get(i));
-				}
+
 			}
 		}
 		return ret;
@@ -77,12 +78,12 @@ public class Proportion {
 		return sum/divide;
 	}
 	
-	public static int computeIV(int OV, int FV, int p) {
-		int IV = FV - ((FV - OV)*p);
-		if(IV < 1) {
-			IV = 1;
+	public static int computeIV(int oV, int fV, int p) {
+		int iV = fV - ((fV - oV)*p);
+		if(iV < 1) {
+			iV = 1;
 		}
-		return IV;
+		return iV;
 	}
 
 }

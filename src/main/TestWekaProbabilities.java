@@ -5,8 +5,15 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.classifiers.evaluation.*;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class TestWekaProbabilities {
-    public static void main(String args[]) throws Exception{
+
+    private static Logger logger;
+
+    public static void main(String[] args) throws Exception{
 
         // load datasets
         Instances training = DataSource.read("C:/Program Files/Weka-3-8-5/data/breast-cancerKnown.arff");
@@ -18,10 +25,10 @@ public class TestWekaProbabilities {
         // make sure they're compatible
         String msg = training.equalHeadersMsg(testing);
         if (msg != null)
-          throw new Exception(msg);
+          throw new IOException(msg);
 
         int numtesting = testing.numInstances();
-        System.out.printf("There are %d test instances\n", numtesting);
+        logger.log(Level.INFO, "There are " + numtesting + " test instances\n");
 
         RandomForest classifier = new RandomForest();
         classifier.buildClassifier(training);
@@ -45,8 +52,7 @@ public class TestWekaProbabilities {
                 classifier.distributionForInstance(testing.instance(i));
 
             // Print out the true label, predicted label, and the distribution.
-            System.out.printf("%5d: true=%-10s, predicted=%-10s, distribution=",
-                              i, trueClassLabel, predictedClassLabel);
+            logger.log(Level.INFO, i + ": true=" + trueClassLabel + " predicted=" + predictedClassLabel + " distribution=");
 
             // Loop over all the prediction labels in the distribution.
                 for (int predictionDistributionIndex = 0;
@@ -62,17 +68,15 @@ public class TestWekaProbabilities {
                     double predictionProbability =
                         predictionDistribution[predictionDistributionIndex];
 
-                    System.out.printf("[%10s : %6.3f]",
-                                      predictionDistributionIndexAsClassLabel,
-                                      predictionProbability );
+                    logger.log(Level.INFO, predictionDistributionIndexAsClassLabel + "% : " + predictionProbability + "%");
                 }
                 System.out.printf("\n");
             }
         Evaluation eval = new Evaluation(testing);
         eval.evaluateModel(classifier, testing);
 
-        System.out.println("AUC = "+eval.areaUnderROC(1));
-        System.out.println("Precision = "+eval.precision(1));
-        System.out.println("Recall = "+eval.recall(1));
+        logger.log(Level.INFO, "AUC = "+eval.areaUnderROC(1));
+        logger.log(Level.INFO, "Precision = "+eval.precision(1));
+        logger.log(Level.INFO, "Recall = "+eval.recall(1));
     }
 }

@@ -9,9 +9,9 @@ public class Commit {
 	private String id;
 	private Date date;
 	private List<String> stringClasses;
-	private List<Class> classes;
+	private List<ClassModel> classes;
 
-	public Commit(String id, Date date, List<String> stringClasses) throws Exception {
+	public Commit(String id, Date date, List<String> stringClasses) {
 		    this.id = id; 
 		    this.date = date;
 		    this.stringClasses = stringClasses;
@@ -37,7 +37,7 @@ public class Commit {
 		return this.stringClasses;
 	}
 	
-	public List<Class> getClasses() {
+	public List<ClassModel> getClasses() {
 		return this.classes;
 	}
 	
@@ -57,7 +57,7 @@ public class Commit {
 		this.stringClasses = stringClasses;
 	}
 	
-	public void setClasses(List<Class> classes) {
+	public void setClasses(List<ClassModel> classes) {
 		this.classes = classes;
 	}
 }

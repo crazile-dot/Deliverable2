@@ -1,26 +1,15 @@
 package main;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.Map;
-import java.util.List;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -28,29 +17,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+public class GetReleaseInfo {
 
-public class getReleaseInfo {
+	private GetReleaseInfo() {}
 	
 	static Integer max = 1;
 	static Integer index;
 
-	public static HashMap<LocalDateTime, String> releaseNames;
-	public static HashMap<LocalDateTime, String> releaseID;
-	public static ArrayList<LocalDateTime> releases;
+	private static Map<LocalDateTime, String> releaseNames;
+	private static Map<LocalDateTime, String> releaseID;
+	private static List<LocalDateTime> releases;
 	
 	public static List<Release> getReleaseList() throws ParseException, JSONException, IOException {
 	   String projName = "BOOKKEEPER";
 
 	   /*Fills the arraylist with releases dates and orders them
 	   		Ignores releases with missing dates*/
-	   releases = new ArrayList<LocalDateTime>();
+	   releases = new ArrayList<>();
 	   Integer i;
 	   String url = "https://issues.apache.org/jira/rest/api/2/project/" + projName;
 	   JSONObject json = readJsonFromUrl(url);
 	   List<Release> releaseList = new ArrayList<>();
 	   JSONArray versions = json.getJSONArray("versions");
-	   releaseNames = new HashMap<LocalDateTime, String>();
-	   releaseID = new HashMap<LocalDateTime, String> ();
+	   releaseNames = new HashMap<>();
+	   releaseID = new HashMap<> ();
 	   for (i = 0; i < versions.length(); i++ ) {
 		   String name = "";
 		   String id = "";
@@ -59,17 +49,12 @@ public class getReleaseInfo {
 				   name = versions.getJSONObject(i).get("name").toString();
 			   if (versions.getJSONObject(i).has("id"))
 				   id = versions.getJSONObject(i).get("id").toString();
-				   addRelease(versions.getJSONObject(i).get("releaseDate").toString(), name,id);
-				}
-			 }
+			   addRelease(versions.getJSONObject(i).get("releaseDate").toString(), name,id);
+		   }
+	   }
 
-			 // order releases by date
-	   Collections.sort(releases, new Comparator<LocalDateTime>(){
-		   @Override
-		   public int compare(LocalDateTime o1, LocalDateTime o2) {
-			   return o1.compareTo(o2);
-			}});
-
+	   // order releases by date
+	   Collections.sort(releases, (LocalDateTime o1, LocalDateTime o2) -> o1.compareTo(o2));
 	   for ( i = 0; i < releases.size(); i++) {
 		   Integer index = i + 1;
 		   releaseList.add(customizeRelease(index, releases.get(i).toString(),
@@ -83,19 +68,15 @@ public class getReleaseInfo {
 		  LocalDate date = LocalDate.parse(strDate);
 		  LocalDateTime dateTime = date.atStartOfDay();
 		  if (!releases.contains(dateTime))
-			 releases.add(dateTime);
+			  releases.add(dateTime);
 		  releaseNames.put(dateTime, name);
 		  releaseID.put(dateTime, id);
-		  return;
 	}
 
 	public static void dateComparator(List<Release> release, List<Commit> commit) {
 		for (int i = 0; i < release.size(); i++) {
 			for(int k = 0; k< commit.size(); k++) {
-				if(release.get(i).getDate().after(commit.get(k).getDate()))  {
-					continue;
-				}
-				else {
+				if(!release.get(i).getDate().after(commit.get(k).getDate()))  {
 					release.get(i).setCommit(commit.get(k-1));
 					break;
 				}
@@ -105,17 +86,17 @@ public class getReleaseInfo {
 
 	public static Release customizeRelease(Integer index, String strDate, String name, String id) throws ParseException {
 		  Date releaseDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(strDate);
-		  Release release = new Release(id, name, releaseDate, index);
-		  return release;
+		  return new Release(id, name, releaseDate, index);
 	   }
 
 	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 	  InputStream is = new URL(url).openStream();
-	  try {
-		 BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+	  try(
+			  BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+
+	  ) {
 		 String jsonText = readAll(rd);
-		 JSONObject json = new JSONObject(jsonText);
-		 return json;
+		 return new JSONObject(jsonText);
 	   } finally {
 		 is.close();
 	   }
@@ -131,7 +112,7 @@ public class getReleaseInfo {
 	   }
 
 
-	public static List<String> VersionArray(String url, int i, int j, String getter) throws IOException, JSONException, ParseException {
+	public static List<String> versionArray(String url, int i, int j, String getter) throws IOException, JSONException, ParseException {
 		JSONObject json = readJsonFromUrl(url);
 		JSONArray issues = json.getJSONArray("issues");
 		int counter = 0;
@@ -154,10 +135,10 @@ public class getReleaseInfo {
 	}
 
 
-	public static boolean containsName(List<Class> list, Class c){
+	public static boolean containsName(List<ClassModel> list, ClassModel c){
 		boolean q = false;
 		int counter = 0;
-		for (Class e: list) {
+		for (ClassModel e: list) {
 		  if (e.getName().equals(c.getName())) {
 			  q = true;
 			  e.setRecurrence(e.getRecurrence() + 1);
@@ -178,25 +159,29 @@ public class getReleaseInfo {
 
 
 
+	public static void classesPerRelease(List<Release> releaseList, List<Commit> commitList) {
+		int lastRef = 0;
+		int firstRef = 0;
+		List<ClassModel> temp = new ArrayList<>();
 
-	public static void assignClassListToRelease(List<Release> releaseList, List<Commit> commitList) throws ParseException, IOException {
-		  int firstRef = 0;
-		  int lastRef = 0;
-		  List<Class> temp = new ArrayList<>();
-		  for (Release release: releaseList) {
-			  lastRef = release.getCommit().getIdNumber();
-			  for (Commit commit: commitList) {
-				  if (commit.getIdNumber() > firstRef && commit.getIdNumber() <= lastRef && commit.getClasses() != null) {
-					  for (Class c: commit.getClasses()) {
-							 if (temp.isEmpty() || !containsName(temp, c)) {
-								 temp.add(c);
-						  }
-					  }
+		for (Release release : releaseList) {
+			lastRef = release.getCommit().getIdNumber();
+			assignClassesToRelease(release, commitList, firstRef, lastRef, temp);
+			firstRef = lastRef;
+			release.setReleaseClasses(temp);
+			temp = new ArrayList<>();
+		}
+	}
+
+	public static void assignClassesToRelease(Release release, List<Commit> commitList, int firstRef, int lastRef, List<ClassModel> temp) {
+		  for (Commit commit: commitList) {
+			  if (commit.getIdNumber() > firstRef && commit.getIdNumber() <= lastRef && commit.getClasses() != null) {
+				  for (ClassModel c: commit.getClasses()) {
+						 if (temp.isEmpty() || !containsName(temp, c)) {
+							 temp.add(c);
+					     }
 				  }
 			  }
-			  firstRef = lastRef;
-			  release.setReleaseClasses(temp);
-			  temp = new ArrayList<>();
 		  }
 	}
 

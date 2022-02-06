@@ -11,15 +11,17 @@ import java.util.Date;
 import java.util.List;
 
 public class GetGitInfo {
+
+	private GetGitInfo() {}
 	
-	
-	public static final String PROGRAM = "git log --date=iso-strict --name-status --stat HEAD --date-order --reverse"; //--abbrev-commit
-	static boolean done = false;
+	private static final String PROGRAM = "git log --date=iso-strict --name-status --stat HEAD --date-order --reverse";
+	private static boolean done = false;
+	private static String search = "commit";
 
 	
 	//Con questa funzione prendo una lista di commit (Oggetto Commit con id e data )dalla directory del progetto
 	
-	public static List<Commit> getCommitList() throws IOException, ParseException{
+	public static List<Commit> getCommits() throws IOException, ParseException{
 		BufferedReader is;  // reader for output of process
 	    String line;
 	    List<Commit> commitList = new ArrayList<>();
@@ -31,7 +33,7 @@ public class GetGitInfo {
 	    is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 	    int countLines = 0;
 	    while (!done && ((line = is.readLine()) != null)) {
-	    	if (line.startsWith("commit")) {
+	    	if (line.startsWith(search)) {
 	    		String d = line.substring(7);
 	    		idList.add(d);
 	    	} else if (line.startsWith("Date:")) {
@@ -59,7 +61,7 @@ public class GetGitInfo {
 	    	line = is2.readLine();
 	    	if (line != null && line.endsWith(".java")) {
 	    		classesList.add(line.substring(2));
-	    	} else if (line != null && line.startsWith("commit") && i != 0 && !classesList.isEmpty()) {
+	    	} else if (line != null && line.startsWith(search) && i != 0 && !classesList.isEmpty()) {
 	    		commitList.get(idList.indexOf(line.substring(7)) - 1).setStringClasses(classesList);
 	    		classesList = new ArrayList<>();	
 	    	}
@@ -68,11 +70,11 @@ public class GetGitInfo {
 	    
 	    if (!commitList.isEmpty()) {
 	    	for (Commit commit: commitList) {
-	    		List<Class> cList = new ArrayList<>();
+	    		List<ClassModel> cList = new ArrayList<>();
 	    		if (commit.getStringClasses() != null) {
 		    		List<String> sList = commit.getStringClasses();
 		    		for (String s: sList) {
-		    			Class c = new Class(s);
+		    			ClassModel c = new ClassModel(s);
 		    			c.setDate(commit.getDate());
 		    			c.setChg(commit.getStringClasses().size());
 		    			cList.add(c);
@@ -85,8 +87,8 @@ public class GetGitInfo {
 	}
 	
 	
-	public static List<Ticket> setClassVersion(List <Ticket> ticket, List <Commit> commitList, List<Release> releases) throws IOException{
-		List <Ticket> ticketList = new ArrayList();
+	public static List<Ticket> setVersion(List <Ticket> ticket, List <Commit> commitList, List<Release> releases) throws IOException{
+		List <Ticket> ticketList = new ArrayList<>();
 		for(Ticket t : ticket) {
 			BufferedReader is;  // reader for output of process
 		    String line;
@@ -96,7 +98,7 @@ public class GetGitInfo {
 		    final Process p = Runtime.getRuntime().exec("git log --grep=" + ticketId + " --date=iso-strict --name-status --stat HEAD  --date-order --reverse", null, dir);
 		    is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		    while (!done && ((line = is.readLine()) != null)) {
-		    	if (line.startsWith("commit")) {
+		    	if (line.startsWith(search)) {
 		    		String s = line.substring(7);
 		    		idList.add(s);
 		    	}
@@ -106,13 +108,11 @@ public class GetGitInfo {
 		    		if(c.getId().equals(e)) {
 		    			t.setCommit(c);
 		    			GetJsonFromUrl.setFVOV(t, releases);
-		    			if(t.getOV() != null && t.getFV() >= t.getOV()) {
-		    				if(!ticketList.contains(t)) {
-			    				ticketList.add(t);
-		    				}
+		    			if(t.getOV() != null && t.getFV() >= t.getOV() && !ticketList.contains(t)) {
+							ticketList.add(t);
 		    			}
-		    			List <Class> classes = c.getClasses();
-		    			for(Class cl: classes) {
+		    			List <ClassModel> classes = c.getClasses();
+		    			for(ClassModel cl: classes) {
 		    				cl.setSingleTicket(t);
 		    			}
 					}

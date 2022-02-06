@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
@@ -29,52 +30,56 @@ import org.json.JSONObject;
 
 public class Metrics {
 
-public static JSONArray getPerCommitMetrics(Repository repository, Release release, HashSet<String> countDevelopers) throws IOException, JSONException {
-		
-		int countRev = 0;
-		int linesAdded;
-		
-		JSONObject jsonDataset = new JSONObject();
-		JSONArray jsonArray = new JSONArray();		
-		
-		for(Commit commit: release.getRCommitList()) {
-			
-			try {
-				
-			    DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
-			    df.setRepository(repository);
-			    df.setDiffComparator(RawTextComparator.DEFAULT);
-			    df.setDetectRenames(true);
-			    RevCommit rev = castToRevCommit(repository, commit);
-			    
-			    if (countDevelopers.isEmpty() || !countDevelopers.contains(rev.getAuthorIdent().getEmailAddress().toString())) {
-			    	countDevelopers.add(rev.getAuthorIdent().getEmailAddress().toString());
-			    }
-		        countRev++;
-		        List<DiffEntry> diffs = getDiffs(repository, rev);
-			    
-			    for (DiffEntry diff : diffs) {
-					linesAdded = 0;
-			    	if(diff.toString().contains(".java") && new File("C:\\Users\\crazile\\git\\bookkeeper\\" + diff.toString().substring(14).replace("]", "")).exists()) {
-				        for(Edit edit : df.toFileHeader(diff).toEditList()) {
-				        	linesAdded += edit.getEndB() - edit.getBeginB();       
-				        }
-				        
-				        jsonDataset.put("FileName", diff.toString().substring(14).replace("]", ""));
-				        jsonDataset.put("Release", release.getNumber());
-				        jsonDataset.put("LOC", countLines(diff.toString().substring(14).replace("]", "")));
-				        jsonDataset.put("NAuth", countDevelopers.size());
-				        jsonDataset.put("NR", countRev);
-				        jsonDataset.put("LOC_added", linesAdded);
-				        jsonArray.put(jsonDataset);
-				        jsonDataset = new JSONObject();
-				       		
-					}
-	        	}
-				        	
-			} catch (IOException e1) {
-			    throw new RuntimeException(e1);
+	private Metrics() {}
+
+	private static final String FILENAME = "FileName";
+	private static final String REL = "Release";
+	private static final String LOC = "LOC";
+	private static final String N_AUTH = "LOC";
+	private static final String NR = "NR";
+	private static final String LOC_ADDED = "LOC_added";
+
+	public static void workOnOneCommit(int countRev, int linesAdded, JSONObject jsonDataset, JSONArray jsonArray, Commit commit, Repository repository, Set<String> countDevelopers, Release release) throws JSONException{
+		try {
+			DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
+			df.setRepository(repository);
+			df.setDiffComparator(RawTextComparator.DEFAULT);
+			df.setDetectRenames(true);
+			RevCommit rev = castToRevCommit(repository, commit);
+			if (countDevelopers.isEmpty() || !countDevelopers.contains(rev.getAuthorIdent().getEmailAddress().toString())) {
+				countDevelopers.add(rev.getAuthorIdent().getEmailAddress().toString());
 			}
+			countRev++;
+			List<DiffEntry> diffs = getDiffs(repository, rev);
+			for (DiffEntry diff : diffs) {
+				linesAdded = 0;
+				if(diff.toString().contains(".java") && new File("C:\\Users\\crazile\\git\\bookkeeper\\" + diff.toString().substring(14).replace("]", "")).exists()) {
+					for(Edit edit : df.toFileHeader(diff).toEditList()) {
+						linesAdded += edit.getEndB() - edit.getBeginB();
+					}
+					jsonDataset.put(FILENAME, diff.toString().substring(14).replace("]", ""));
+					jsonDataset.put(REL, release.getNumber());
+					jsonDataset.put(LOC, countLines(diff.toString().substring(14).replace("]", "")));
+					jsonDataset.put(N_AUTH, countDevelopers.size());
+					jsonDataset.put(NR, countRev);
+					jsonDataset.put(LOC_ADDED, linesAdded);
+					jsonArray.put(jsonDataset);
+					jsonDataset = new JSONObject();
+				}
+			}
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public static JSONArray getMetrics(Repository repository, Release release, Set<String> countDevelopers) throws JSONException {
+		int countRev = 0;
+		int linesAdded = 0;
+		JSONObject jsonDataset = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		for(Commit commit: release.getRCommitList()) {
+			workOnOneCommit(countRev, linesAdded, jsonDataset, jsonArray, commit, repository, countDevelopers, release);
 		}
 		return jsonArray;
 	}
@@ -125,18 +130,15 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
 		if (releaseArray.length() == 0) {
 			return false;
 		} else {
-			if (getElement(releaseArray, obj) != -1) {
-				return true;
-			}
-			return false;
+			return getElement(releaseArray, obj) != -1;
 		}
 		
 	}
 	
 	public static int getElement(JSONArray releaseArray, JSONObject obj) throws JSONException {
 		for (int i = 0; i < releaseArray.length(); i++) {
-			if(releaseArray.getJSONObject(i).get("FileName").toString().equals(obj.get("FileName").toString()) 
-					&& releaseArray.getJSONObject(i).get("Release").toString().equals(obj.get("Release").toString())) {
+			if(releaseArray.getJSONObject(i).get(FILENAME).toString().equals(obj.get(FILENAME).toString())
+					&& releaseArray.getJSONObject(i).get(REL).toString().equals(obj.get(REL).toString())) {
 				return i;
 			}
 		}
@@ -155,13 +157,13 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
 
 		HashSet<String> countDevelopers = null;
 		JSONArray commitJsonArray = new JSONArray();
-		JSONArray releaseJsonArray = new JSONArray();
+		JSONArray releaseJsonArray;
         
         for(Release r: releaseList) {
-        	countDevelopers = new HashSet<String>();
-        	commitJsonArray = getPerCommitMetrics(repository, r, countDevelopers);
+        	countDevelopers = new HashSet<>();
+        	commitJsonArray = getMetrics(repository, r, countDevelopers);
 	    }
-        releaseJsonArray = generateJsonArray(commitJsonArray, countDevelopers);
+        releaseJsonArray = generateJsonArray(commitJsonArray);
         
         return releaseJsonArray;
 	}
@@ -172,7 +174,7 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
 			String loc;
 			
 			if (commitJsonArray.getJSONObject(i).get("LOC").equals(releaseObject.get("LOC"))) {
-				loc = commitJsonArray.getJSONObject(i).get("NAuth").toString();
+				loc = commitJsonArray.getJSONObject(i).get(N_AUTH).toString();
 			} else {
 				loc = ((Integer) Math.max(Integer.parseInt(commitJsonArray.getJSONObject(i).get("LOC").toString()), Integer.parseInt(releaseObject.get("LOC").toString()))).toString();
 			}
@@ -184,10 +186,10 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
 		
 		String nAuth;
 		
-		if (commitJsonArray.getJSONObject(i).get("NAuth").equals(releaseObject.get("NAuth"))) {
-			nAuth = commitJsonArray.getJSONObject(i).get("NAuth").toString();
+		if (commitJsonArray.getJSONObject(i).get(N_AUTH).equals(releaseObject.get(N_AUTH))) {
+			nAuth = commitJsonArray.getJSONObject(i).get(N_AUTH).toString();
 		} else {
-			nAuth = ((Integer) Math.max(Integer.parseInt(commitJsonArray.getJSONObject(i).get("NAuth").toString()), Integer.parseInt(releaseObject.get("NAuth").toString()))).toString();
+			nAuth = ((Integer) Math.max(Integer.parseInt(commitJsonArray.getJSONObject(i).get(N_AUTH).toString()), Integer.parseInt(releaseObject.get(N_AUTH).toString()))).toString();
 		}
 		
 		return nAuth;
@@ -215,13 +217,13 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
 	}
 	
 
-    public static JSONArray generateJsonArray(JSONArray commitJsonArray, HashSet<String> countDevelopers) throws JSONException {
+    public static JSONArray generateJsonArray(JSONArray commitJsonArray) throws JSONException {
     	
     	String nAuth = "";
     	String nR = "";
     	String loc = "";
     	String locAdded = "";
-    	
+
 		JSONArray releaseJsonArray = new JSONArray();
 
         for (int i = 0; i < commitJsonArray.length(); i++) {
@@ -235,10 +237,10 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
         		loc = getLoc(commitJsonArray, i, releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))));
         		locAdded = getLocAdded(commitJsonArray, i, releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))));
         		
-        		releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))).put("NAuth", nAuth);
+        		releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))).put(N_AUTH, nAuth);
         		releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))).put("NR", nR);
         		releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))).put("LOC", loc);
-        		releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))).put("LOC_added", loc);
+        		releaseJsonArray.getJSONObject(getElement(releaseJsonArray, commitJsonArray.getJSONObject(i))).put("LOC_added", locAdded);
         		
         	}
         }
@@ -246,13 +248,13 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
         
     }
     
-    public static void setMetric(List <Class> classes, JSONArray array) throws JSONException {
-		for (Class c: classes) {
+    public static void setMetric(List <ClassModel> classes, JSONArray array) throws JSONException {
+		for (ClassModel c: classes) {
 			for(int i = 0; i < array.length(); i++) {
-				if(array.getJSONObject(i).has("FileName") && c.getName().contains(array.getJSONObject(i).get("FileName").toString())) {
+				if(array.getJSONObject(i).has(FILENAME) && c.getName().contains(array.getJSONObject(i).get(FILENAME).toString())) {
 					c.setLoc(Integer.parseInt(array.getJSONObject(i).get("LOC").toString()));
 					c.setLocAdded(Integer.parseInt(array.getJSONObject(i).get("LOC_added").toString()));
-					c.setAuthors(Integer.parseInt(array.getJSONObject(i).get("NAuth").toString()));
+					c.setAuthors(Integer.parseInt(array.getJSONObject(i).get(N_AUTH).toString()));
 					c.setNRevisions(Integer.parseInt(array.getJSONObject(i).get("NR").toString()));
 			
 				}
@@ -263,30 +265,30 @@ public static JSONArray getPerCommitMetrics(Repository repository, Release relea
 		
 	}
     
-    public static void computeMaxAdded(List<Class> classes) {
+    public static void computeMaxAdded(List<ClassModel> classes) {
     	int temp;
     	int max = 0;
-    	for (Class c: classes) {
+    	for (ClassModel c: classes) {
     		temp = c.getLocAdded();
     		if (temp > max) {
     			max = temp;
     		}
     	}
-    	for (Class c: classes) {
+    	for (ClassModel c: classes) {
     		c.setMaxLocAdded(max);
     	}
     }
     
-    public static void computeAvgAdded(List<Class> classes) {
+    public static void computeAvgAdded(List<ClassModel> classes) {
     	float sum = 0;
     	float add;
     	float divide = 1;
-    	for (Class c: classes) {
+    	for (ClassModel c: classes) {
     		add = c.getLocAdded();
     		sum += add;
     		divide++;
     	}
-    	for (Class c : classes) {
+    	for (ClassModel c : classes) {
     		c.setAvgLocAdded(sum/divide);
     	}
     }
