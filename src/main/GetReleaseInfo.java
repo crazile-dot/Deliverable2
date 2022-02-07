@@ -166,14 +166,14 @@ public class GetReleaseInfo {
 
 		for (Release release : releaseList) {
 			lastRef = release.getCommit().getIdNumber();
-			assignClassesToRelease(release, commitList, firstRef, lastRef, temp);
+			assignClassesToRelease(commitList, firstRef, lastRef, temp);
 			firstRef = lastRef;
 			release.setReleaseClasses(temp);
 			temp = new ArrayList<>();
 		}
 	}
 
-	public static void assignClassesToRelease(Release release, List<Commit> commitList, int firstRef, int lastRef, List<ClassModel> temp) {
+	public static void assignClassesToRelease(List<Commit> commitList, int firstRef, int lastRef, List<ClassModel> temp) {
 		  for (Commit commit: commitList) {
 			  if (commit.getIdNumber() > firstRef && commit.getIdNumber() <= lastRef && commit.getClasses() != null) {
 				  for (ClassModel c: commit.getClasses()) {

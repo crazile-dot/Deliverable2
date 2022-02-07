@@ -23,6 +23,7 @@ public class RetrieveBuggy {
     private RetrieveBuggy() {}
 
     private static Logger logger;
+    private static String filename = "\\versions.txt";
 	
     private static String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -67,9 +68,9 @@ public class RetrieveBuggy {
 
     public static void createFile() {
         try {
-            File myFile = new File("C:\\Users\\crazile\\Desktop\\versions.txt");
+            File myFile = new File("C:\\Users\\crazile\\Desktop" + filename);
             if (myFile.createNewFile()) {
-                logger.log(Level.INFO, "File created: " + myFile.getName());
+                logger.log(Level.INFO, "File created: {0}", myFile.getName());
             } else {
                 logger.log(Level.INFO, "File already exists.");
             }
