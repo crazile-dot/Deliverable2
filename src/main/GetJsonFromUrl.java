@@ -30,6 +30,7 @@ public class GetJsonFromUrl {
 		InputStream is = new URL(url).openStream();
 		try (BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));) {
 			String jsonText = readAll(rd);
+			//System.out.println("Json: " + jsonText.substring(0, 1000));
 			return new JSONObject(jsonText);
 		} finally {
 			is.close();
@@ -108,13 +109,14 @@ public class GetJsonFromUrl {
 		List<Ticket> ticketList = new ArrayList<>();
 		for(int i = 0; i< cDate.size(); i++) {
 			Ticket t = new Ticket(name.get(i), cDate.get(i), rDate.get(i), id.get(i));
+			//System.out.println("Ticket: " + t.getResolutionDate());
 			ticketList.add(t);
 		}
 		return ticketList;
 	}
 	
 	
-	public static boolean setFVOV(Ticket ticket, List<Release> releases) {
+	/*public static boolean setFVOV(Ticket ticket, List<Release> releases) {
 		for (Release r: releases) {
 			if(ticket.getCreationDate().before(r.getDate()) && ticket.getOV() == null) {
 				ticket.setOV(r.getNumber());
@@ -128,7 +130,7 @@ public class GetJsonFromUrl {
 			}
 		}
 		return true;
-	}
+	}*/
 	
 	
 	public static void returnAffectedVersion(Ticket ticket, List<Release> releases) throws IOException, JSONException, ParseException {

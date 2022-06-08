@@ -1,6 +1,9 @@
 package main;
 
 import java.util.Date;
+import java.util.List;
+
+import org.eclipse.jgit.revwalk.RevCommit;
 
 public class Ticket {
 
@@ -8,12 +11,12 @@ public class Ticket {
 	private Date creationDate;
 	private Date resolutionDate;
 	private String id;
-	private Commit commit;
+	private RevCommit commit;
 	private Integer iV;
 	private Integer oV;
 	private Integer fV;
 	private Integer p;
-	
+	private List<Integer> aV;
 	
 	public Ticket (String name, Date creationDate, Date resolutionDate, String id) {
 		this.name = name;
@@ -45,7 +48,7 @@ public class Ticket {
 	}
 	
 	
-	public Commit getCommit() {
+	public RevCommit getCommit() {
 		return this.commit;
 	}
 	
@@ -63,6 +66,10 @@ public class Ticket {
 	
 	public Integer getP() {
 		return this.p;
+	}
+	
+	public List<Integer> getAV() {
+		return this.aV;
 	}
 
 	public void setName(String name) {
@@ -85,7 +92,7 @@ public class Ticket {
 	}
 	
 	
-	public void setCommit(Commit commit) {
+	public void setCommit(RevCommit commit) {
 		this.commit = commit;
 	}
 	
@@ -103,5 +110,9 @@ public class Ticket {
 	
 	public void setP(Integer p) {
 		this.p = p;
+	}
+	
+	public void setAV(List<Integer> aV) {
+		this.aV = aV;
 	}
 }

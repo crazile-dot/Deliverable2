@@ -1,23 +1,36 @@
 package main;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.json.JSONArray;
 
 public class CsvWriter {
-	static String projName = "RAMPART";
+	static String projName = "BOOKKEEPER";
+	static String projName2 = "AVRO"; // promemoria
+	
+	private static final String REPO = "C://Users//Ilenia//Desktop//ISW//bookkeeper//.git";
+	private static final String REPO2 = "C://Users//Ilenia//Desktop//ISW//avro//.git";
+	
+	private static final String out = "C://Users//Ilenia//Desktop//ISW//deliverable_output//releasesBookkeeper.csv";
+	private static final String out2 = "C://Users//Ilenia//Desktop//ISW//deliverable_output//releasesAvro.csv";
+
+
 	static Integer max = 1;
 	static Integer index;
 	private static Logger logger;
 
-	public static void csvByWeka(List <WekaData> wList, List<Release> releases) throws IOException {
+	/*public static void csvByWeka(List <WekaData> wList, List<Release> releases) throws IOException {
 		String name = "C:\\Users\\Ilenia\\Desktop\\weka-data" + ".csv";
 		try (BufferedWriter br = new BufferedWriter(new FileWriter(name))) {
 			StringBuilder sb = new StringBuilder();
@@ -101,9 +114,8 @@ public class CsvWriter {
 					sb2.append(w.getEval().kappa());
 					sb2.append("\n");
 					br.write(sb2.toString());
-				}
-				catch(NullPointerException e) {
-					logger.log(Level.INFO, "NullPointerException caught");
+				} catch(NullPointerException e) {
+
 				}
 			}
 		}
@@ -227,9 +239,10 @@ public class CsvWriter {
 			}
 		}
 	}
+	*/
 	
 	public static void csvFinal(List <Release> releases) throws IOException {
-		try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\Ilenia\\Intellij-projects\\Releases.csv"))) {
+		try (BufferedWriter br = new BufferedWriter(new FileWriter(out))) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Release");
 			sb.append(",");
@@ -260,37 +273,37 @@ public class CsvWriter {
 			sb.append("Buggy");
 			sb.append("\n");
 			br.write(sb.toString());
-			int size = releases.size();
-			for (int i = 0 ; i < size; i++) {
-				for (ClassModel c : releases.get(i).getReleaseClasses()) {
+			for (Release r: releases) {
+				for (ClassModel cM1: r.getReleaseClasses()) {
+					RetrieveBuggy.setBuggyField(cM1, r);
 					StringBuilder sb2 = new StringBuilder();
-					sb2.append(releases.get(i).getNumber());
+					sb2.append(r.getNumber());
 					sb2.append(",");
-					sb2.append(c.getName());
+					sb2.append(cM1.getName());
 					sb2.append(",");
-					sb2.append(c.getLoc());
+					sb2.append("");
 					sb2.append(",");
-					sb2.append(TempMetrics.classAge(c));
+					sb2.append("");
 					sb2.append(",");
-					sb2.append(c.getChg());
+					sb2.append("");
 					sb2.append(",");
-					sb2.append(c.getMaxChg());
+					sb2.append("");
 					sb2.append(",");
-					sb2.append(TempMetrics.getAVGChg(c));
+					sb2.append("");
 					sb2.append(",");
-					sb2.append(TempMetrics.numberOfBugFixedForRelease(releases.get(i), c));
+					sb2.append("");
 					sb2.append(",");
-					sb2.append(c.getAuthors());
+					sb2.append(cM1.getAuthors());
 					sb2.append(",");
-					sb2.append(c.getNRevisions());
+					sb2.append(cM1.getNRevisions());
 					sb2.append(",");
-					sb2.append(c.getLocAdded());
+					sb2.append(cM1.getLocAdded());
 					sb2.append(",");
-					sb2.append(c.getMaxLocAdded());
+					sb2.append(cM1.getMaxLocAdded());
 					sb2.append(",");
-					sb2.append(c.getAvgLocAdded());
+					sb2.append(cM1.getAvgLocAdded());
 					sb2.append(",");
-					sb2.append(c.getBugginess());
+					sb2.append(cM1.getBugginess());
 					sb2.append("\n");
 					br.write(sb2.toString());
 				}
@@ -299,29 +312,107 @@ public class CsvWriter {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		long inizio = System.currentTimeMillis();
+		
+	    long start = System.currentTimeMillis();
+
 		Integer i = 0;
 		Integer j = 0;
 		j = i + 1000;
-		
-		
+
 		String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22"
 	               + projName + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
 	               + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,affectedVersion,versions,created&startAt="
 				+ i.toString() + "&maxResults=" + j.toString();
-		List<Date> createdarray = main.GetJsonFromUrl.dateArray(url, i , j , "created");
-		List<Date> resolutionarray = main.GetJsonFromUrl.dateArray(url, i , j , "resolutiondate");
-		List <String> keyArray = main.GetJsonFromUrl.keyArray(url, i, j);
-		List <String> version = GetReleaseInfo.versionArray(url, i ,1000, "name");
-		main.GetJsonFromUrl.idArray(url, i , j );
-		List<Ticket> ticket;
-		List<Ticket> ticketConCommit;
-		List <Commit> commit = GetGitInfo.getCommits();
+		
+		/**
+		 * Dal json estraggo le info che mi servono e creo una lista di oggetti Ticket
+		 */
+		List<Date> createdArray = main.GetJsonFromUrl.dateArray(url, i , j , "created");
+		List<Date> resolutionArray = main.GetJsonFromUrl.dateArray(url, i , j , "resolutiondate");
+		List<String> keyArray = main.GetJsonFromUrl.keyArray(url, i, j);
+		List<String> versionArray = GetReleaseInfo.versionArray(url, i ,1000, "name");
+		//main.GetJsonFromUrl.idArray(url, i , j );
+		List<Ticket> ticketList = GetJsonFromUrl.setTicket(createdArray, resolutionArray, versionArray, keyArray);
+		
+		/**
+		 * Ora prendo le commit 
+		 */
+		List<RevCommit> revCommitList = GetGitInfo.getCommitList(REPO);
+		//List<Commit> commitList = GetGitInfo.parseRevCommits(revCommitList); 
+		
+		/**
+		 * prendo le release e vi associo le commit corrispondenti, ordinate
+		 */
+		List<Release> releases = GetReleaseInfo.getReleaseList(projName);
+		List<Release> halfReleases = releases.subList(0, releases.size()/2);
+		List<Release> releaseConCommit = GetReleaseInfo.assignCommitsToRelease(revCommitList, halfReleases);	
+
+		/**
+		 * prendo i file .java dalle commit e li associo alle release corrispondenti
+		 * (da una parte metto tutti i file .java relativi alla commit,
+		 * dall'altra i file toccati dalla commit, cioè le diff)
+		 */
+		List<Release> releaseConClassi = GetReleaseInfo.assignDiffsToRelease(revCommitList, releaseConCommit, REPO);
+		GetReleaseInfo.parseReleaseDiffs(releaseConClassi);		
+		GetReleaseInfo.parseReleaseDiffsWithDuplicated(releaseConClassi);
+		GetReleaseInfo.assignClassesToRelease(revCommitList, releaseConClassi, REPO);
+		
+		/**
+		 * Ora assegno le commit di resolution, la FV e la OV ad ogni ticket
+		 */
+		List<Ticket> ticketConCommit = GetGitInfo.compareTicketCommit(revCommitList, ticketList);
+		List<Ticket> ticketConFV = GetReleaseInfo.compareTicketReleaseFV(releaseConClassi, ticketConCommit);
+		List<Ticket> ticketFiltrati = GetReleaseInfo.ticketFilter(ticketConFV);
+		List<Ticket> ticketConOV = GetReleaseInfo.compareTicketReleaseOV(releaseConClassi, ticketFiltrati);
+		
+		/**
+		 * ora devo prendere le IV per ogni ticket da jira (poi su quelle che non ce l'hanno, si fa proportion)
+		 */
+		List<Ticket> ticketConIV = GetReleaseInfo.assignTicketIVFromJira(ticketConOV, releaseConClassi);
+		Proportion.checkIV(ticketConIV);
+		Proportion.computeAVs(ticketConIV);
+		
+		/**
+		 * assegno lista di ticket ad ogni classe
+		 */
+		//List<Release> releaseConTicket = setTicketListPerClass(ticketConIV, releaseConClassi);
+		
+		/**
+		 * ora devo calcolare la bugginess per ogni file in ogni release
+		 */
+		RetrieveBuggy.computeBugginess(ticketConIV, releaseConClassi);
+		
+		/**
+		 * calcoliamo le metriche 
+		 */
+		Metrics.computeMetrics(releaseConClassi, REPO);
+		
+		/**
+		 * genero il csv con i risultati
+		 */
+		csvFinal(releaseConClassi);
+		
+		/*
+		int k = 0;
+		int l = 0;
+		for (Ticket t: ticketConIV) {
+			if (t.getP() != 0 && t.getP() != null) {
+				System.out.println(t.getP());
+				k++;
+			} else {
+				l++;
+			}
+		}
+		System.out.println(k);
+		System.out.println(l);
+*/
+		
+		/*List <Commit> commit = GetGitInfo.getCommits();
 		List<Release> releases = GetReleaseInfo.getReleaseList();
-		List<String> testingSet;
+		/*List<String> testingSet;
 		List<String> trainingSet;
 		int size = GetReleaseInfo.getReleaseList().size();
-		ticket = GetJsonFromUrl.setTicket(createdarray,resolutionarray,version,keyArray);
+		
 		GetReleaseInfo.dateComparator(releases,commit);
 		for(Ticket t : ticket) {
 			GetJsonFromUrl.returnAffectedVersion(t, releases);
@@ -350,8 +441,9 @@ public class CsvWriter {
 		for(int z = 1; z< testingSet.size()+1; z ++) {
 			wekaList.addAll(TestWekaEasy.wekaAction(testingSet.get(z-1), trainingSet.get(z-1), z, getDefectiveInTraining(releases.subList(0,size/2), z)));
 		}
-		csvByWeka(wekaList, releases.subList(0,size/2));
-		long fine = System.currentTimeMillis();
-		logger.log(Level.ALL, "{0}", String.valueOf((fine-inizio)/1000));
+		csvByWeka(wekaList, releases.subList(0,size/2));*/
+	    long end = System.currentTimeMillis();   
+	    System.out.println("Tempo di esecuzione: " + Float.valueOf(end-start)/Float.valueOf(60000) + " m");
+
 	}
 }

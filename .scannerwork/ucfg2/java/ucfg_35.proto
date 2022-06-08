@@ -1,0 +1,49 @@
+
+'main.Proportion#getP(Ljava/util/List;)IC
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.java? ?("10*ß
+6C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.javaF F(Œ
+‰
+C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.javaF F(
+%3java.lang.Integer"
+__arrayGet*
+
+ljava.util.List*
+""*
+7
+1*â
+7C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.javaE E(Œ
+‰
+C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.javaE E(
+%2java.lang.Integer"
+__arrayGet*
+
+ljava.util.List*
+""*	
+6
+7
+1*õ
+10C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.java@ @(Š‡
+C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.java@ @(	
+%0int"java.util.List#size()I*
+
+ljava.util.List2size()”‘
+C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.javaC C(
+%1boolean"java.util.List#isEmpty()Z*
+
+ljava.util.List2	isEmpty()*
+7
+1*—
+1C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.javaN	 N("M
+C
+9C:/Users/Ilenia/git/Deliverable2/src/main/Proportion.javaN N(
+"":
+ljava.util.ListB"
+main.Proportion

@@ -7,25 +7,19 @@ public class Proportion {
 
 	private Proportion() {}
 
-	public static List<Ticket> checkIV(List<Ticket> ticketList) {
+	public static void checkIV(List<Ticket> ticketList) {
 		int iV;
-		List<Ticket> ret = new ArrayList<>();
-		for (int i = 0; i < ticketList.size(); i++) {
-			if(ticketList.get(i).getCommit() == null) {
-				continue;
-			}
-			if (ticketList.get(i).getFV() != null && ticketList.get(i).getOV() != null) {
-				//se IV != null viene settato a -1
-				if (ticketList.get(i).getIV() == -1) {
-					iV = computeInconsistentIV(i, ticketList);
-					ticketList.get(i).setIV(iV);
-				} else {
-					computeP(ticketList.get(i));
-				}
-
-			}
+		if (ticketList.get(0).getIV() == -1) {
+			ticketList.get(0).setIV(1);
 		}
-		return ret;
+		for (int i = 0; i < ticketList.size(); i++) {
+			if (ticketList.get(i).getIV() == -1) {
+				iV = computeInconsistentIV(i, ticketList);
+				ticketList.get(i).setIV(iV);
+			} else {
+				computeP(ticketList.get(i));
+			}	
+		}
 	}
 	
 	public static int computeP(Ticket ticket) {
@@ -71,6 +65,8 @@ public class Proportion {
 				}
 				divide++;
 			}
+		} else {
+			sum = 1;
 		}
 		if (divide == 0) {
 			divide = 1;
@@ -84,6 +80,16 @@ public class Proportion {
 			iV = 1;
 		}
 		return iV;
+	}
+	
+	public static void computeAVs(List<Ticket> ticketList) {
+		for (Ticket t: ticketList) {
+			List<Integer> aVs = new ArrayList<>();
+			for (int i = t.getIV(); i < t.getFV(); i++) {
+				aVs.add(i);
+			}
+			t.setAV(aVs);
+		}
 	}
 
 }

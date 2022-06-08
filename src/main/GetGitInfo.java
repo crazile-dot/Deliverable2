@@ -8,17 +8,111 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.EmptyTreeIterator;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
+
 public class GetGitInfo {
 
 	private GetGitInfo() {}
+
+	public static List<RevCommit> getCommitList(String repository) throws IOException, GitAPIException {
+		List<RevCommit> commitList = new ArrayList<>();
+		
+		Repository repo = new FileRepository(repository);
+	    Git git = new Git(repo);
+	    RevWalk walk = new RevWalk(repo);
+
+	    List<Ref> branches = git.branchList().call();
+
+	    for (Ref branch : branches) {
+	        String branchName = branch.getName();
+	        
+	        Iterable<RevCommit> commits = git.log().all().call();
+
+	        for (RevCommit commit : commits) {
+	            boolean foundInThisBranch = false;
+
+	            RevCommit targetCommit = walk.parseCommit(repo.resolve(
+	                    commit.getName()));
+	            for (Map.Entry<String, Ref> e : repo.getAllRefs().entrySet()) {
+	                if (e.getKey().startsWith(Constants.R_HEADS)) {
+	                    if (walk.isMergedInto(targetCommit, walk.parseCommit(
+	                            e.getValue().getObjectId()))) {
+	                        String foundInBranch = e.getValue().getName();
+	                        if (branchName.equals(foundInBranch)) {
+	                            foundInThisBranch = true;
+	                            break;
+	                        }
+	                    }
+	                }
+	            }
+
+	            if (foundInThisBranch) {
+	                commitList.add(commit);
+	            }
+	        }
+	    }
+	    return commitList;
+	}
 	
-	private static final String PROGRAM = "git log --date=iso-strict --name-status --stat HEAD --date-order --reverse";
-	private static boolean done = false;
-	private static String search = "commit";
-	private static String projName = "bookkeeper";
-
-
-	public static void checkLine(String line, List<String> idList, List<Date> dateList) throws  ParseException{
+	public static List<Commit> parseRevCommits(List<RevCommit> revCommitList) {
+		List<Commit> commitList = new ArrayList<>();
+		
+		for (RevCommit rC: revCommitList) {
+			Commit commit = new Commit(rC.getName(), new Date(rC.getCommitTime() * 1000L), rC.getFullMessage(), rC.getAuthorIdent().getName());
+			commitList.add(commit);
+		}
+		return commitList;
+	}
+	
+	public static List<Ticket> compareTicketCommit(List<RevCommit> commitList, List<Ticket> ticketList) {
+		List<Ticket> tList = new ArrayList<>();
+		for (Ticket t: ticketList) {
+			for (RevCommit c:commitList) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+				if (sdf.format(t.getResolutionDate()).equals(sdf.format(new Date(c.getCommitTime() * 1000L)))) {
+					t.setCommit(c);
+				}
+			}
+			if(t.getCommit() != null) {
+				tList.add(t);
+			}
+		}
+		return tList;
+	}
+	
+	public static List<DiffEntry> getDiffs(Repository repository, RevCommit rev) throws IOException {
+		List<DiffEntry> diffs;
+		DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
+		df.setRepository(repository);
+		df.setDiffComparator(RawTextComparator.DEFAULT);
+		df.setContext(0);
+		df.setDetectRenames(true);
+		if (rev.getParentCount() != 0) {
+			RevCommit parent = (RevCommit) rev.getParent(0).getId();
+			diffs = df.scan(parent.getTree(), rev.getTree());
+		} else {
+			RevWalk rw = new RevWalk(repository);
+			ObjectReader reader = rw.getObjectReader();
+			diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, reader, rev.getTree()));
+		}
+		return diffs;
+ 	}
+ 
+	/*public static void checkLine(String line, List<String> idList, List<Date> dateList) throws  ParseException{
 		if (line.startsWith(search)) {
 			String d = line.substring(7);
 			idList.add(d);
@@ -65,36 +159,6 @@ public class GetGitInfo {
 		}
 	}
 
-	//Con questa funzione prendo una lista di commit (oggetto Commit con id e data) dalla directory del progetto
-	public static List<Commit> getCommits() throws IOException, ParseException{
-		BufferedReader is;  // reader for output of process
-	    String line;
-	    List<Commit> commitList = new ArrayList<>();
-	    List<String> idList = new ArrayList<>();
-	    List<Date> dateList = new ArrayList<>();
-	    List<String> classesList = new ArrayList<>();
-	    File dir = new File("C:\\Users\\Ilenia\\Intellij-projects\\" + projName);
-	    final Process p = Runtime.getRuntime().exec(PROGRAM, null, dir);
-	    is = new BufferedReader(new InputStreamReader(p.getInputStream()));
-	    int countLines = 0;
-	    while (!done && ((line = is.readLine()) != null)) {
-			checkLine(line, idList, dateList);
-			countLines++;
-	    }
-	    if (idList.size() == dateList.size()) {
-		    fillCommitList(idList, dateList, commitList);
-	    }
-	    final Process p2 = Runtime.getRuntime().exec(PROGRAM, null, dir);
-	    BufferedReader is2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
-	    for (int i = 0; i < countLines; i++) {
-	    	line = is2.readLine();
-	    	classesList = checkOtherLine(line, classesList, commitList, idList, i);
-	    }
-	    if (!commitList.isEmpty()) {
-	    	setClasses(commitList);
-	    }
-	    return commitList;
-	}
 
 	public static void setId(String line, BufferedReader is, List<String> idList) throws IOException{
 		while (!done && ((line = is.readLine()) != null)) {
@@ -142,6 +206,6 @@ public class GetGitInfo {
 		}
 	    return ticketList;
 	
-	}
+	}*/
 
 }

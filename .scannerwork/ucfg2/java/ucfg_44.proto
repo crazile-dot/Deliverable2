@@ -1,0 +1,35 @@
+
+Qmain.GetJsonFromUrl#parseStringToAffectedDate(Ljava/lang/String;)Ljava/util/Date;G
+=C:/Users/Ilenia/git/Deliverable2/src/main/GetJsonFromUrl.java6 6(-"1*Œ
+1G
+=C:/Users/Ilenia/git/Deliverable2/src/main/GetJsonFromUrl.java8 8(}
+{
+G
+=C:/Users/Ilenia/git/Deliverable2/src/main/GetJsonFromUrl.java8 8(
+formatjava.lang.String"__id*
+
+yyyy-MM-ddŠ‡
+G
+=C:/Users/Ilenia/git/Deliverable2/src/main/GetJsonFromUrl.java9 9( 
+%0java.text.SimpleDateFormat"java.text.SimpleDateFormatÌ
+É
+G
+=C:/Users/Ilenia/git/Deliverable2/src/main/GetJsonFromUrl.java9	 9(%
+%1"6java.text.SimpleDateFormat#<init>(Ljava/lang/String;)V*"
+ 
+%0java.text.SimpleDateFormat*
+
+formatjava.lang.Stringÿü
+G
+=C:/Users/Ilenia/git/Deliverable2/src/main/GetJsonFromUrl.java9	 9(3
+%2java.util.Date">java.text.DateFormat#parse(Ljava/lang/String;)Ljava/util/Date;*"
+ 
+%0java.text.SimpleDateFormat*
+
+stringjava.lang.String2parse(Ljava/lang/String;)"a
+G
+=C:/Users/Ilenia/git/Deliverable2/src/main/GetJsonFromUrl.java9 9(4
+
+%2java.util.Date:
+stringjava.lang.StringB"
+main.GetJsonFromUrl

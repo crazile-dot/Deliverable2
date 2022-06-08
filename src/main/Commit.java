@@ -8,14 +8,23 @@ public class Commit {
 	private int idNumber;
 	private String id;
 	private Date date;
+	private String message;
+	private String author;
 	private List<String> stringClasses;
 	private List<ClassModel> classes;
 
 	public Commit(String id, Date date, List<String> stringClasses) {
-		    this.id = id; 
-		    this.date = date;
-		    this.stringClasses = stringClasses;
-		  }
+	    this.id = id; 
+	    this.date = date;
+	    this.stringClasses = stringClasses;
+	}
+	
+	public Commit(String id, Date date, String message, String author) {
+	    this.id = id; 
+	    this.date = date;
+	    this.message = message;
+	    this.author = author;
+	}
 	
 	Commit() {
 		

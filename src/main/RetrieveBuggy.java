@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -24,7 +25,35 @@ public class RetrieveBuggy {
 
     private static Logger logger;
     private static String filename = "\\versions.txt";
-	
+    
+    public static void computeBugginess(List<Ticket> tList, List<Release> rList) {
+    	for (Ticket t: tList) {
+    		if (!t.getAV().isEmpty()) {
+    			for (Integer version: t.getAV()) {
+    				setBugginess(version, rList);
+    			}
+    		}
+    	}
+    }
+ 	
+    private static void setBugginess(Integer v, List<Release> rList) {
+    	for (Release r: rList) {
+			if (v == r.getNumber()) {
+				for (ClassModel cM: r.getParsedReleaseDiffs()) {
+					cM.setBugginess(true);
+				}
+			}
+		}
+    }
+    
+    public static void setBuggyField(ClassModel cM1, Release r) {
+    	for (ClassModel cM2: r.getParsedReleaseDiffs()) { 
+			if (cM1.getName().equals(cM2.getName())) {
+				cM1.setBugginess(true);
+			}
+    	}
+    }
+    
     private static String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
         int cp;

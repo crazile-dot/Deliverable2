@@ -1,0 +1,7 @@
+organization=crazile-dot
+projectKey=crazile-dot_Deliverable2
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.26577
+dashboardUrl=https://sonarcloud.io/dashboard?id=crazile-dot_Deliverable2
+ceTaskId=AX7UDorTivlcj3_rfID4
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AX7UDorTivlcj3_rfID4

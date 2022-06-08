@@ -276,10 +276,10 @@ public class TestWekaEasy{
 			featureSelection.setSampling(noSamplingString);
 			featureSelection.setEvaluation(evalClass);
 			wekaList.add(featureSelection);
-			LOGGER.log(Level.INFO, "AUC filtered = "+evalClass.areaUnderROC(1));
-			LOGGER.log(Level.INFO, "Kappa filtered = "+evalClass.kappa());
-			LOGGER.log(Level.INFO, "Precision filtered = "+evalClass.precision(1)+ "\n");
-			LOGGER.log(Level.INFO, "Recall filtered = "+evalClass.recall(1)+ "\n");
+			LOGGER.log(Level.INFO, "AUC filtered = " + evalClass.areaUnderROC(1));
+			LOGGER.log(Level.INFO, "Kappa filtered = " + evalClass.kappa());
+			LOGGER.log(Level.INFO, "Precision filtered = " + evalClass.precision(1) + "\n");
+			LOGGER.log(Level.INFO, "Recall filtered = " + evalClass.recall(1) + "\n");
 			WekaData oS = overSampling(filteredTraining, testingFiltered, defectiveInTraining, c, z);
 			WekaData uS = underSampling(filteredTraining, testingFiltered, c, z);
 			WekaData smote = smoteSampling(filteredTraining, testingFiltered, defectiveInTraining, c, z);

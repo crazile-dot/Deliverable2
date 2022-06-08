@@ -4,26 +4,40 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ClassModel {
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.revwalk.RevCommit;
+
+public class ClassModel extends DiffEntry {
 	
 	private String name;
 	private boolean buggy;
 	private List<Ticket> ticketList;
+	private RevCommit commit;
+	private String developer;
 	private Date date;
-	private int chg; //numero di file committati insieme a lui
-	private int maxChg; //massimo numero di file committati insieme a lui nella release
+	private int linesAdded;
+	private int linesDeleted;
+	private int chg; //numero di file committati insieme a lui in quella release
+	private int maxChg; //massimo numero di file committati insieme a lui nelle varie revisioni
 	private int sumChg; //somma dei valori totali di chg utile per ottenere la media
 	private int recurrence; //quante volte una classe appare in una commit di una release, utile per la media
 	private int loc; //numero di righe della classe
-	private int locAdded; //numero di righe aggiunte in quella classe, in quella release
-	private int maxLocAdded; //numero massimo di righe aggiunte a quella classe nelle varie release
-	private float avgLocAdded; //numero medio di righe aggiunte a quella classe nelle varie release
+	private int locAdded; //numero di righe aggiunte in quella classe, in quella revisione
+	private int maxLocAdded; //numero massimo di righe aggiunte a quella classe nelle varie revisioni
+	private float avgLocAdded; //numero medio di righe aggiunte a quella classe nelle varie revisioni
 	private int authors; //numero di autori che hanno modificato quella classe in quella release
-	private int age; //et� della classe in settimane
+	private int age; //eta della classe in settimane
 	private int nFix; //numero di bug fixati in quella classe in quella release
 	private int nRevisions; //numero di revisioni che toccano quella classe in quella release
 	
 	public ClassModel() { }
+	
+	public ClassModel(String name, boolean buggy, String developer) {
+		this.name = name;
+		this.buggy = buggy;
+		this.developer = developer;
+	}
 	
 	public ClassModel(String name) {
 		this.name = name;
@@ -45,12 +59,21 @@ public class ClassModel {
 		return this.date;
 	}
 	
+	public int getLinesAdded() {
+		return this.linesAdded;
+	}
+	
+	public int getLinesDeleted() {
+		return this.linesDeleted;
+	}
 	
 	public List<Ticket> getTicketList() {
 		return this.ticketList;
 	}
 	
-	
+	public String getDeveloper() { 
+		return this.developer;
+	}
 
 	public int getChg() {
 		return this.chg;
@@ -112,6 +135,18 @@ public class ClassModel {
 	
 	public void setTicketList(List<Ticket> ticketList) {
 		this.ticketList = ticketList;
+	}
+	
+	public void setDeveloper(String developer) {
+		this.developer = developer;
+	}
+	
+	public void setLinesAdded(int linesAdded) {
+		this.linesAdded = linesAdded;
+	}
+	
+	public void setLinesDeleted(int linesDeleted) {
+		this.linesDeleted = linesDeleted;
 	}
 	
 	public void setChg(int chg) {

@@ -6,11 +6,19 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/crazile/git/Deliverable2/lib/slf4j-api-1.7.30.jar"/>
-	<classpathentry kind="lib" path="C:/Users/crazile/git/Deliverable2/lib/slf4j-simple-1.7.30.jar"/>
-	<classpathentry kind="lib" path="C:/Users/crazile/Downloads/SMOTE-1.0.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ilenia/Downloads/java-json.jar/java-json.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ilenia/Downloads/org.eclipse.jgit-6.0.0.202111291000-r.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ilenia/Downloads/weka-3.6.0.jar/weka-3.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/json-20220320.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/slf4j-api-1.7.30.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/slf4j-simple-1.7.30.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.archive-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.gpg.bc-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.http.apache-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.lfs.server-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.lfs-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.pgm-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.ssh.apache.agent-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.ssh.apache-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.ssh.jsch-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit.ui-6.1.0.202203080745-r.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ilenia/eclipse/jar_files (3)/org.eclipse.jgit-6.1.0.202203080745-r.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
